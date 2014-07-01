@@ -27,6 +27,8 @@ $(function(){
 
 			$('input[type=submit]', form).prop('disabled', false);
 
+			$(document).trigger('formSuccess', [form]);
+
 		}).fail(function(data) {
 			$formMessages.removeClass('success');
 			$formMessages.addClass('error');
@@ -37,6 +39,8 @@ $(function(){
 				$formMessages.text('Oops! An error occurred.');
 			}
 			$('input[type=submit]', form).prop('disabled', false);
+
+			$(document).trigger('formFail', [form]);
 		});
 	}
 
