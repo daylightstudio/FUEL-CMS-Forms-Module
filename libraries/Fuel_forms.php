@@ -153,6 +153,44 @@ class Fuel_forms extends Fuel_advanced_module {
 		return $this->fuel->layouts->get($layout, 'block');
 	}
 
+		// --------------------------------------------------------------------
+	
+	/**
+	 * Returns all the entries for a given prom
+	 *
+	 * @access	public
+	 * @param	string start date
+	 * @param	mixed end date
+	 * @return	array
+	 */	
+	function all_entries_by_date($start_date, $end_date)
+	{
+		$this->load_model('form_entries');
+		$this->form_entries_model->db()->select('COUNT(*) as num_entries, DATE(form_entries.date_added) as date_added_day');
+		$this->form_entries_model->db()->group_by('form_id, DATE(form_entries.date_added)');
+		$where = 'form_entries.date_added BETWEEN "'.$start_date.'" AND "'.$end_date.'"';
+
+		$data = $this->CI->form_entries_model->find_all_array($where);
+		$return = array();
+		foreach($data as $key => $val)
+		{
+			if (!isset($return[$val['form']]))
+			{
+				$return[$val['form']] = array();
+			}
+
+			$ts = strtotime($val['date_added_day']);
+			$year = date('Y', $ts);
+			$month = date('m', $ts);
+			$day = date('d', $ts);
+			$utc = mktime(date('h') + 1, NULL, NULL, $month, $day, $year) * 1000;
+
+			$return[$val['form']][] = array($utc, $val['num_entries']);
+		}
+		//$this->CI->form_entries_model->debug_query();
+		return $return;
+	}
+	
 	// --------------------------------------------------------------------
 	
 	/**
@@ -208,6 +246,8 @@ class Fuel_form extends Fuel_base_library {
 	protected $javascript_validate = TRUE; // Determines whether to use javascript to do front end validation before sending to the backend
 	protected $javascript_waiting_message = 'Sending...'; // The message to display during the AJAX process
 	protected $email_recipients = ''; // The recipients to recieve the email after form submission
+	protected $email_cc = ''; // The CC recipients to recieve the email after form submission
+	protected $email_bcc = ''; // The BCC recipients to recieve the email after form submission
 	protected $email_subject = ''; // The subject line of the email being sent
 	protected $email_message = ''; // The email message to send
 	protected $after_submit_text = ''; // The text/HTML to display after the submission process
@@ -741,11 +781,15 @@ class Fuel_form extends Fuel_base_library {
 			if (is_dev_mode())
 			{
 				$email->to($this->fuel->forms->config('test_email'));
+				$email->cc($this->email_cc);
+				$email->bcc($this->email_bcc);
 			}
 			else
 			{
 				// need to fill this out to work
 				$email->to($this->email_recipients);
+				$email->cc($this->email_cc);
+				$email->bcc($this->email_bcc);
 			}
 
 			// Build the email content
@@ -923,7 +967,7 @@ class Fuel_form extends Fuel_base_library {
 	{
 		if (empty($posted)) 
 		{
-			$posted = $this->CI->input->post();
+			$posted = $this->CI->input->post(NULL, TRUE);
 		}
 		$return = array();
 		if (!empty($posted))
@@ -934,7 +978,7 @@ class Fuel_form extends Fuel_base_library {
 			{
 				if (!preg_match('#^_.+#', $val) AND isset($fields[$key]) AND $fields[$key]->type != 'hidden')
 				{
-					$return[$key] = $val;
+					$return[$key] = strip_tags($val);
 				}
 			}	
 		}

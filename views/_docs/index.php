@@ -22,7 +22,12 @@
 // load the helper ... $CI is CI object obtained from the get_instance(); and automatically passed to blocks
 $CI->load->module_helper(FORMS_FOLDER, 'forms');
 
-echo forms('myform', array('fields' => array('name' => array('required' => TRUE)));
+echo form('myform', array('fields' => array('name' => array('required' => TRUE)));
+</pre>
+
+<p>To add the form to a page in the CMS, you will need to add the "form" function to the <dfn>$config['parser_allowed_php_functions']</dfn> configuration in the <span class="file">fuel/application/config/parser.php</span> file. Then you can use the templating syntax like so:</p>
+<pre class="brush:php">
+{form('myform')}
 </pre>
 
 <h3>Using the 'forms' fuel object</h3>
@@ -41,6 +46,48 @@ $fields['password2'] = array('type' => 'password', 'label' => 'Password verfied'
 
 $form = $this->fuel->forms->create('myform', array('fields' => $fields, 'validation' => $validation));
 echo $form->render();
+</pre>
+
+<h3>Customizing the HTML</h3>
+<p>There are several ways to generate the HTML for the form. The first option is to use "auto" which will use the <a href="http://docs.getfuelcms.com/libraries/form_builder" target="_blank">Form_builder</a> class to generate the form based on
+the fields you've specified. Fields can be specified in the CMS, or passed in under the 'fields' parameter as demonstrated in the above example. The second option is to use a block view and the third is to simply use an HTML string.
+In both cases, you will automatically have several varables passed to it included a <dfn>$fields</dfn> array which contains an array of all the the rendered fields, their labels, and their "key" values. It also will pass variables of <dfn>email_field</dfn> and <dfn>email_label</dfn> where "email" is the name of the field.
+You can then use the following in your block view or HTML:
+</p>
+
+<h4>Block View</h4>
+<pre class="brush:php">
+&lt;?php foreach($fields as $field) : ?&gt;
+<div>
+	&lt;?=$field['label']?&gt;
+	<p>&lt;?=$field['field']?&gt;</p>
+</div>
+&lt;?php endforeach; ?&gt;
+
+<!-- OR -->
+<div>
+	&lt;?=$name_label?&gt;
+	<p>&lt;?=$name_field?&gt;</p>
+</div>
+<div>
+	&lt;?=$email_label?&gt;
+	<p>&lt;?=$email_field?&gt;</p>
+</div>
+</pre>
+
+<h4>Template Syntax</h4>
+<pre class="brush:php">
+<div>
+	{name_label}
+
+	<p>{name_field}</p>
+</div>
+
+<div>
+	{email_label}
+
+	<p>{email_field}</p>
+</div>
 </pre>
 
 <h3>Kitchen Sink</h3>
@@ -64,7 +111,9 @@ $params['block_view_module'] = 'application'; // the name of the module the bloc
 $params['javascript_submit'] = FALSE;
 $params['javascript_validate'] = TRUE;
 $params['javascript_waiting_message'] = 'Submitting Information...';
-$params['email_recipients'] = 'superman@krypton';
+$params['email_recipients'] = 'superman@krypton.com';
+$params['email_cc'] = 'batman@gotham.com';
+$params['email_bcc'] = 'wonderwoman@paradiseisland.com';
 $params['email_subject'] = 'Website Submission';
 $params['email_message'] = '{name} Just signed up!';
 $params['after_submit_text'] = 'You have successfully signed up.';
@@ -75,6 +124,9 @@ $form = $this->fuel->forms->create('myform', $params);
 echo $form->render();
 
 </pre>
+
+
+
 <?=generate_config_info()?>
 
 

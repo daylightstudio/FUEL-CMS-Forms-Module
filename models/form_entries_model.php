@@ -156,6 +156,9 @@ class Form_entries_model extends Base_module_model {
 	{
 		parent::_common_query();
 
+		$this->db->select($this->_tables['form_entries'].'.*, '.$this->_tables['forms'].'.name as form');
+		$this->db->join($this->_tables['forms'], $this->_tables['forms'].'.id = '.$this->_tables['form_entries'].'.form_id', 'LEFT');
+
 		// remove if no precedence column is provided
 		$this->db->order_by('date_added desc');
 	}

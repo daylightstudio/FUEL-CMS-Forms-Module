@@ -67,7 +67,7 @@ class Forms_model extends Base_module_model {
 
 		// form
 		$fields['Form'] = array('type' => 'fieldset', 'order' => 100, 'class' => 'tab');
-		$fields['form_display'] = array('type' => 'enum', 'order' => 102, 'options' => array('auto' => 'auto', 'block' => 'block', 'html' => 'html'), 'comments' => 'Select which method you\'d like to use to render the form', 
+		$fields['form_display'] = array('type' => 'enum', 'order' => 102, 'options' => array('auto' => 'auto', 'block' => 'block', 'html' => 'html'), 'comment' => 'Select which method you\'d like to use to render the form', 
 			'class' => 'form_display_option',
 			'js' => '<script>
 			$(function(){
@@ -95,11 +95,11 @@ class Forms_model extends Base_module_model {
 		$block_view_module = (!empty($values['block_view_module'])) ? $values['block_view_module'] : '';
 		$block_view_module_field = array('name' => 'block_view_module', 'type' => 'select', 'options' => $this->fuel->modules->options_list(TRUE), 'first_option' => 'application', 'value' => $block_view_module);
 		$module_view = $this->form_builder->create_select($block_view_module_field);
-		$fields['block_view']['comment'] = 'The view file used to render the form. If no value is provided, then the form will be automatically generated.';
+		$fields['block_view']['comment'] = 'The view file used to render the form. If no value is provided, then the form will be automatically generated. More information on the templating syntax and variables that get passed to the HTML and view file can be found in the documentation.';
 		$fields['block_view']['after_html'] = ' in the '.$module_view.' module';
 		$fields['block_view']['order'] = 103;
-		$fields['form_html'] = array('type' => 'textarea', 'order' => 104, 'label' => 'Form HTML');
-		$fields['anti_spam'] = array('type' => 'block', 'block_name' => 'antispam', 'order' => 105, 'display_label' => FALSE, 'label' => 'Anti SPAM method', 'module' => FORMS_FOLDER);
+		$fields['form_html'] = array('type' => 'textarea', 'order' => 104, 'label' => 'Form HTML', 'comment' => 'Insert HTML code for your form. More information on the templating syntax and variables that get passed to the HTML and view file can be found in the documentation.');
+		$fields['anti_spam_method'] = array('type' => 'block', 'block_name' => 'antispam', 'order' => 105, 'display_label' => FALSE, 'label' => 'Anti SPAM method', 'module' => FORMS_FOLDER);
 		$fields['submit_button_text']['order'] = 106;
 		$fields['reset_button_text']['order'] = 107;
 
@@ -139,13 +139,15 @@ class Forms_model extends Base_module_model {
 		$fields['javascript_waiting_message'] = array('order' => 305, 'value' => 'Sending...', 'comment' => 'The message to display while the form is being processed.');
 
 		// after post
-		$fields['After Post'] = array('type' => 'fieldset', 'order' => 400, 'class' => 'tab');
+		$fields['After Submit'] = array('type' => 'fieldset', 'order' => 400, 'class' => 'tab');
 		$fields['form_action'] = array('order' => 401, 'comment' => 'This field is irrevelant if the view contains the form tag and action. If no action is provided, the form will submit to itself.');
 		$fields['after_submit_text']['order'] = 402;
 		$fields['email_recipients']['order'] = 403;
-		$fields['email_subject']['order'] = 404;
-		$fields['email_message'] = array('type' => 'textarea', 'order' => 405, 'class' => 'no_editor', 'style' => 50);
-		$fields['return_url'] = array('label' => 'Return URL', 'order' => 406);
+		$fields['email_cc'] = array('label' => 'CC recipients', 'order' => 404);
+		$fields['email_bcc'] = array('label' => 'BCC recipients', 'order' => 405);
+		$fields['email_subject']['order'] = 406;
+		$fields['email_message'] = array('type' => 'textarea', 'order' => 407, 'class' => 'no_editor', 'style' => 50);
+		$fields['return_url'] = array('label' => 'Return URL', 'order' => 408);
 		
 
 		// remove unused

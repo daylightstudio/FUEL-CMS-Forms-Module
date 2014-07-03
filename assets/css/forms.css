@@ -1,2 +1,3 @@
 .ico_forms { background-image: url(../images/ico_application_form.png); }
 .ico_form_entries { background-image: url(../images/ico_vcard.png); }
+#entries {  width: 800px !important; }
