@@ -125,6 +125,13 @@ echo $form->render();
 
 </pre>
 
+<h2>Dashboard</h2>
+<p>The Forms module comes with a dashboard widget that displays the number of form submissions per day and can be enabled by adding the following <span class="file">fuel/application/config/MY_fuel.php</span>:</p>
+<pre class="brush:php">
+// dashboard modules to include
+$config['dashboards'] = array('forms', 'fuel');
+</pre>
+
 
 
 <?=generate_config_info()?>
