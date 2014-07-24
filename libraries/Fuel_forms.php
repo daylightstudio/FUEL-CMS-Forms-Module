@@ -102,20 +102,27 @@ class Fuel_forms extends Fuel_advanced_module {
 		// check the page mode to see if we can query the database
 		if ($this->fuel->pages->mode() != 'views')
 		{
-			$forms_model = $this->model('forms');
-			$forms_model->db()->where(array('name' => $name));
-			$forms_model->db()->or_where(array('slug' => $name));
-			if (is_int($name))
+			if (!isset($this->CI->db))
 			{
-				$forms_model->db()->or_where(array('id' => $name));	
+				$this->CI->load->database();
 			}
-			$form_data = $forms_model->find_one();
 
-			if (isset($form_data->id))
-			{
-				// prep values for initialization
-				$params = $form_data->values(TRUE);
-				$params['fields'] = $form_data->get_form_fields();
+			if ($this->CI->db->table_exists('forms')){
+				$forms_model = $this->model('forms');
+				$forms_model->db()->where(array('name' => $name));
+				$forms_model->db()->or_where(array('slug' => $name));
+				if (is_int($name))
+				{
+					$forms_model->db()->or_where(array('id' => $name));	
+				}
+				$form_data = $forms_model->find_one();
+
+				if (isset($form_data->id))
+				{
+					// prep values for initialization
+					$params = $form_data->values(TRUE);
+					$params['fields'] = $form_data->get_form_fields();
+				}
 			}
 		}
 
@@ -632,19 +639,27 @@ class Fuel_form extends Fuel_base_library {
 		if ($this->validate())
 		{
 
-			if ($this->is_save_entries())
+			if ($this->fuel->pages->mode() != 'views' && $this->is_save_entries())
 			{
-				$posted = $this->clean_posted();
-				$model =& $this->CI->fuel->forms->model('form_entries');
-				$entry = $model->create();
-				$entry->url = last_url();
-				$entry->post = json_encode($posted);
-				$entry->form_id = $this->id;
-				$entry->remote_ip = $_SERVER['REMOTE_ADDR'];
-				$entry->fill($posted);
-				if (!$entry->save())
+				if (!isset($this->CI->db))
 				{
-					return FALSE;
+					$this->CI->load->database();
+				}
+
+				if ($this->CI->db->table_exists('form_entries'))
+				{
+					$posted = $this->clean_posted();
+					$model =& $this->CI->fuel->forms->model('form_entries');
+					$entry = $model->create();
+					$entry->url = last_url();
+					$entry->post = json_encode($posted);
+					$entry->form_id = $this->id;
+					$entry->remote_ip = $_SERVER['REMOTE_ADDR'];
+					$entry->fill($posted);
+					if (!$entry->save())
+					{
+						return FALSE;
+					}
 				}
 			}
 
