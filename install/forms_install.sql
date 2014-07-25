@@ -1,8 +1,6 @@
 # Dump of table form_entries
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `form_entries`;
-
 CREATE TABLE `form_entries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `form_id` int(10) NOT NULL,
@@ -17,8 +15,6 @@ CREATE TABLE `form_entries` (
 
 # Dump of table forms
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `forms`;
 
 CREATE TABLE `forms` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
