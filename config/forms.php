@@ -16,7 +16,7 @@ $config['nav']['forms'] = array(
 |--------------------------------------------------------------------------
 */
 
-// You can add form configurations here which can then be referenced simply by one of the following methds form('test'), $this->fuel->forms->get('test')
+// you can add form configurations here which can then be referenced simply by one of the following methods form('test'), $this->fuel->forms->get('test')
 $config['forms']['forms'] = array(
 	/*'test' => array('javascript_validate' => FALSE, 'javascript_submit' => FALSE, 
 		'fields' => array(

@@ -17,6 +17,7 @@
 <p>There are a number of hooks you can use to add additional processing functionality during the form submission process. You can pass it a callable function or an array with the first index being the object and the second being the method to execute on the object.
 	Additionally, you can specify an array of <a href="http://ellislab.com/codeigniter/user-guide/general/hooks.html" target="_blank">CodeIgniter hook parameters</a>. 
 	The hooks must be specified in the config file to be run upon processing and not on the object during rendering unless the form is submitting to the same page in which it is rendered.
+	A hook gets passed 2 parameters&mdash;the first is the form object instance, the second is the $_POST parameters as a convenience.
 	The following hooks are:
 </p>
 <ul>
@@ -28,6 +29,34 @@
 	<li><strong>success</strong>: executes upon successful submission</li>
 	<li><strong>error</strong>: executes on error</li>
 </ul>
+
+<p>Below is an example of adding a hook in the configuration file of a form:</p>
+<pre class="brush:php">
+// you can add form configurations here which can then be referenced simply by one of the following methods form('test'), $this->fuel->forms->get('test')
+$config['forms']['forms'] = array(
+	'contact' => array(
+				'anti_spam_method' => array('method' => 'honeypot'),
+				'after_submit_text' => 'Your inquiry has been successfully sent.',
+				'email_recipients' => array('superman@krypton.com'),
+				'javascript_submit' => TRUE,
+				'javascript_validate' => TRUE,
+				'form_action' => 'forms/application',
+				'submit_button_text' => 'Submit',
+				'reset_button_text' => 'Reset',
+				'form_display' => 'block',
+				'block_view' => 'application_form',
+				'fields' => array(
+					'fullname' => array('required' => TRUE, 'label' => 'Full Name'),
+					'phone' => array('type' => 'phone', 'required' => TRUE, 'label' => 'Phone'),
+					'email' => array('type' => 'email', 'required' => TRUE),
+					'comments' => array('type' => 'textarea', 'rows' => 5, 'label' => 'Comments &amp; Questions'),
+					),
+				'hooks' => array(
+					'post_validate' => 'my_post_validate_func'
+					)
+	)
+);
+</pre>
 
 <h2>Examples</h2>
 <p>There are several ways you can create forms. One is by using the CMS. The other is by specifying the parameters for the form in the forms configuration file under the "forms" configuration are.</p>
