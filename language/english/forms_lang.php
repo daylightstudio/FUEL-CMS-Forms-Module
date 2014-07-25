@@ -4,7 +4,7 @@ $lang['module_forms'] = 'Forms';
 $lang['forms_invalid_form_specified'] = 'An invalid form name was specified.';
 $lang['forms_invalid_email_address'] = 'Please correct the entered email address(es).';
 $lang['forms_form_required'] = 'The field "%s" is required.';
-$lang['forms_email_message'] = "The following information was submitted from the %1s form:\n\n%2s.";
+$lang['forms_email_message'] = "The following information was submitted from the %1s form:\n\n%2s";
 $lang['forms_after_submit'] = "Thanks. Your submission has been successfully processed.";
 
 $lang['forms_submit_button_default'] = 'Submit';
