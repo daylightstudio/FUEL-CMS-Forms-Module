@@ -30,6 +30,8 @@
 	<li><strong>error</strong>: executes on error</li>
 </ul>
 
+<p>If the <a href="http://ellislab.com/codeigniter/user-guide/general/hooks.html" target="_blank">CodeIgniter hook parameters</a> syntax is used, the actual hook name being used is 'form_{slug}_{hook}' (e.g. form_contact_pre_validate).</p>
+
 <p>Below is an example of adding a hook in the configuration file of a form:</p>
 <pre class="brush:php">
 // you can add form configurations here which can then be referenced simply by one of the following methods form('test'), $this->fuel->forms->get('test')
