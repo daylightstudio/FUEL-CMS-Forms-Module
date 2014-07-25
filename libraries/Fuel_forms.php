@@ -51,7 +51,7 @@ class Fuel_forms extends Fuel_advanced_module {
 	 * @param	array	config preferences
 	 * @return	void
 	 */	
-	function initialize($params)
+	public function initialize($params)
 	{
 		parent::initialize($params);
 		$this->set_params($this->_config);
@@ -69,7 +69,7 @@ class Fuel_forms extends Fuel_advanced_module {
 	 * @param	array	Initialization parameters
 	 * @return	object
 	 */	
-	function create($name, $params = array())
+	public function create($name, $params = array())
 	{
 		$params['name'] = $name;
 		$params['slug'] = url_title($name, '-', TRUE);
@@ -95,7 +95,7 @@ class Fuel_forms extends Fuel_advanced_module {
 	 * @param	boolean	Determines whether to check the database or not
 	 * @return	object
 	 */	
-	function get($name, $check_db = TRUE)
+	public function get($name, $check_db = TRUE)
 	{
 		$form = NULL;
 		$params = array();
@@ -110,23 +110,28 @@ class Fuel_forms extends Fuel_advanced_module {
 
 			if ($this->CI->db->table_exists('forms')){
 				$forms_model = $this->model('forms');
-				$forms_model->db()->where(array('name' => $name));
-				$forms_model->db()->or_where(array('slug' => $name));
-				if (is_int($name))
-				{
-					$forms_model->db()->or_where(array('id' => $name));	
-				}
-				$form_data = $forms_model->find_one();
 
-				if (isset($form_data->id))
+				// additional check that their are correct fields for returning the form since it's a pretty generic name for a table
+				$fields = $forms_model->fields();
+				if (in_array('name', $fields) AND in_array('slug', $name))
 				{
-					// prep values for initialization
-					$params = $form_data->values(TRUE);
-					$params['fields'] = $form_data->get_form_fields();
+					$forms_model->db()->where(array('name' => $name));
+					$forms_model->db()->or_where(array('slug' => $name));
+					if (is_int($name))
+					{
+						$forms_model->db()->or_where(array('id' => $name));	
+					}
+					$form_data = $forms_model->find_one();
+
+					if (isset($form_data->id))
+					{
+						// prep values for initialization
+						$params = $form_data->values(TRUE);
+						$params['fields'] = $form_data->get_form_fields();
+					}
 				}
 			}
 		}
-
 		// next check the configuration to see if there are any declared
 		if (empty($form_data))
 		{
@@ -156,7 +161,7 @@ class Fuel_forms extends Fuel_advanced_module {
 	 * @param	string	Name of the block layout to retrieve
 	 * @return	object
 	 */	
-	function field_layout($layout)
+	public function field_layout($layout)
 	{
 		return $this->fuel->layouts->get($layout, 'block');
 	}
@@ -171,7 +176,7 @@ class Fuel_forms extends Fuel_advanced_module {
 	 * @param	mixed end date
 	 * @return	array
 	 */	
-	function all_entries_by_date($start_date, $end_date)
+	public function all_entries_by_date($start_date, $end_date)
 	{
 		$this->load_model('form_entries');
 		$this->form_entries_model->db()->select('COUNT(*) as num_entries, DATE(form_entries.date_added) as date_added_day');
@@ -209,7 +214,7 @@ class Fuel_forms extends Fuel_advanced_module {
 	 * @param	array	An array of arguments to pass to the method
 	 * @return	mixed
 	 */	
-	function __call($method, $args)
+	public function __call($method, $args)
 	{
 		if (isset($args[0]))
 		{
@@ -294,9 +299,10 @@ class Fuel_form extends Fuel_base_library {
 	 * @param	array	config preferences
 	 * @return	void
 	 */	
-	function initialize($params)
+	public function initialize($params)
 	{
 		parent::initialize($params);
+		$this->CI->load->library('validator');
 
 		// need to reset the validation object upon initialization since we are simply sharing the same one from $CI->validator
 		$validator =& $this->get_validator();
@@ -682,7 +688,7 @@ class Fuel_form extends Fuel_base_library {
 
 			if (!$this->notify())
 			{
-				$this->run_hook('error');
+				$this->run_hook('error', array('errors' => $this->last_error()));
 				return FALSE;
 			}
 			$this->run_hook('success');
@@ -736,7 +742,8 @@ class Fuel_form extends Fuel_base_library {
 		// loop through the $form variable to grab all the form fields marked as required to add validation rules
 		foreach($fields as $f)
 		{
-			if (empty($f->name)) continue;
+			if (empty($f->name) OR !isset($form_validators[$f->type])) continue;
+
 			$field = $form_validators[$f->type];
 
 			if ($f->is_required())
@@ -797,7 +804,7 @@ class Fuel_form extends Fuel_base_library {
 	 * Calls a specified hook to be run
 	 *
 	 * @access	public
-	 * @param	hook	The type of hook (e.g. "pre_render" or "post_render")
+	 * @param	hook	The type of hook (e.g. "pre_validate" or "pre_save")
 	 * @param	array	An array of additional parameters to pass to the hook method/function
 	 * @return	void
 	 */
@@ -814,7 +821,7 @@ class Fuel_form extends Fuel_base_library {
 		else
 		{
 			// call hooks set in hooks file
-			$hook_name = 'form_'.$hook;
+			$hook_name = 'form_'.$this->slug.'_'.$hook;
 			
 			if (!empty($this->hooks[$hook]))
 			{
@@ -920,7 +927,7 @@ class Fuel_form extends Fuel_base_library {
 	 * @access	public
 	 * @return	string  Returns the javascript script files registered with the form including any the jquery.validate plugin if javascript_validate is set to TRUE
 	 */	
-	function js_output()
+	public function js_output()
 	{
 		$output = '';
 		// include js files
@@ -955,7 +962,7 @@ class Fuel_form extends Fuel_base_library {
 	 * @access	public
 	 * @return	array  Returns an array of variables that can be used in views/block files
 	 */	
-	function rendered_vars($form_fields)
+	public function rendered_vars($form_fields)
 	{
 		$rendered_fields = array();
 		$vars = array();
@@ -989,7 +996,7 @@ class Fuel_form extends Fuel_base_library {
 	 * @access	public
 	 * @return	array  Returns an array of form fields
 	 */	
-	function form_fields()
+	public function form_fields()
 	{
 		// setup fields for the form
 		$form_fields = array();
@@ -1010,6 +1017,19 @@ class Fuel_form extends Fuel_base_library {
 		$form_fields['return_url'] = array('type' => 'hidden', 'value' => $this->get_return_url());
 
 		return $form_fields;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Returns the validator object used for validating the front end
+	 *
+	 * @access	protected
+	 * @return	object
+	 */	
+	public function &get_validator()
+	{
+		return $this->CI->validator;
 	}
 
 	// --------------------------------------------------------------------
@@ -1103,19 +1123,6 @@ class Fuel_form extends Fuel_base_library {
 		}
 	}
 	
-	// --------------------------------------------------------------------
-
-	/**
-	 * Returns the validator object used for validating the front end
-	 *
-	 * @access	protected
-	 * @return	object
-	 */	
-	protected function &get_validator()
-	{
-		return $this->CI->validator;
-	}
-
 	// --------------------------------------------------------------------
 	
 	/**
@@ -1342,7 +1349,8 @@ class Fuel_form extends Fuel_base_library {
 		{
 			if (property_exists($this, $found[1]))
 			{
-				$method = $this->$found[1];
+
+				$method = $found[1];
 				$this->$method = $args[0];
 				return TRUE;
 			}
