@@ -92,15 +92,16 @@ class Fuel_forms extends Fuel_advanced_module {
 	 *
 	 * @access	public
 	 * @param	string	Name of the form to retrieve. Will first look in the database and then in the config file
+	 * @param	boolean	Determines whether to check the database or not
 	 * @return	object
 	 */	
-	function get($name)
+	function get($name, $check_db = TRUE)
 	{
 		$form = NULL;
 		$params = array();
 
 		// check the page mode to see if we can query the database
-		if ($this->fuel->pages->mode() != 'views')
+		if ($this->fuel->pages->mode() != 'views' AND $check_db)
 		{
 			if (!isset($this->CI->db))
 			{
@@ -386,7 +387,7 @@ class Fuel_form extends Fuel_base_library {
 			$this->CI->form_builder->form_attrs = 'novalidate method="post" action="'.$this->get_form_action().'" class="form" id="'.$this->slug.'"'.$ajax_submit.$js_validate.$js_waiting_message;
 			$this->CI->form_builder->display_errors = TRUE;
 			$this->CI->form_builder->required_text = lang('forms_required');
-			$output .= $this->CI->form_builder->render_divs();
+			$output .= $this->CI->form_builder->render();
 		}
 		
 
