@@ -680,7 +680,7 @@ class Fuel_form extends Fuel_base_library {
 						$this->run_hook('error', array('errors' => $entry->errors()));
 						return FALSE;
 					}
-					$this->run_hook('post_save');
+					$this->run_hook('post_save'); 
 				}
 			}
 
@@ -931,7 +931,7 @@ class Fuel_form extends Fuel_base_library {
 	{
 		$output = '';
 		// include js files
-		if ($this->is_javascript_submit() OR $this->is_javascript_submit())
+		if ($this->is_javascript_submit() OR $this->is_javascript_validate())
 		{
 			$output .= "\n".js('jquery.validate.min', FORMS_FOLDER);
 			$output .= "\n".js('additional-methods.min', FORMS_FOLDER);
