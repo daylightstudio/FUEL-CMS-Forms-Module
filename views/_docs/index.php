@@ -10,6 +10,23 @@
 	<li>Automatic validation of common fields and provides ways to add your own custom validation</li>
 	<li>Both javascript submit and validation as well as server side</li>
 	<li>Specify a return URL</li>
+	<li>Hooks into various parts of the processing of the email</li>
+</ul>
+
+<h2>Hooks</h2>
+<p>There are a number of hooks you can use to add additional processing functionality during the form submission process. You can pass it a callable function or an array with the first index being the object and the second being the method to execute on the object.
+	Additionally, you can specify an array of <a href="http://ellislab.com/codeigniter/user-guide/general/hooks.html" target="_blank">CodeIgniter hook parameters</a>. 
+	The hooks must be specified in the config file to be run upon processing and not on the object during rendering unless the form is submitting to the same page in which it is rendered.
+	The following hooks are:
+</p>
+<ul>
+	<li><strong>pre_validate</strong>: excutes right before the validation of the form fields</li>
+	<li><strong>post_validate</strong>: executes after the validation of the form fields</li>
+	<li><strong>pre_save</strong>: executes right before saving (if saving is enabled for the form)</li>
+	<li><strong>post_save</strong>: executes right after saving (if saving is enabled for the form)</li>
+	<li><strong>pre_notify</strong>: executes right before notifying a recipient</li>
+	<li><strong>success</strong>: executes upon successful submission</li>
+	<li><strong>error</strong>: executes on error</li>
 </ul>
 
 <h2>Examples</h2>
@@ -123,13 +140,6 @@ $params['js'] = 'myvalidation.js'; // extra javascript validation can be include
 $form = $this->fuel->forms->create('myform', $params);
 echo $form->render();
 
-</pre>
-
-<h2>Dashboard</h2>
-<p>The Forms module comes with a dashboard widget that displays the number of form submissions per day and can be enabled by adding the following <span class="file">fuel/application/config/MY_fuel.php</span>:</p>
-<pre class="brush:php">
-// dashboard modules to include
-$config['dashboards'] = array('forms', 'fuel');
 </pre>
 
 

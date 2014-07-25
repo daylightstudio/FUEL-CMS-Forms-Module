@@ -262,6 +262,7 @@ class Fuel_form extends Fuel_base_library {
 	protected $validation = array(); // An array of extra validation rules to run during the submission process beyond 'required' and the rules setup by default for a field type (e.g. valid_email, valid_phone)
 	protected $js = array(); // Additional javascript files to include for the rendering of the form
 	protected $fields = array(); // The fields for the form. This is not required if you are using your own HTML in a block or HTML form_display view
+	protected $hooks = array(); // An array of different callable functions associated with one of the predefined hooks "pre_validate", "post_validate", "pre_save", "post_save", "pre_notify", "success", "error" (e.g. 'pre_validate' => 'My_func')
 
 	// --------------------------------------------------------------------
 	
@@ -631,13 +632,18 @@ class Fuel_form extends Fuel_base_library {
 	public function process()
 	{
 
-		$msg = $this->get_email_message();
-
 		// saved in the post so that it can be validated by post processors like Akismet
-		$_POST['__email_message__'] = $msg;
+		$_POST['__email_message__'] = $this->get_email_message();
+
+		// pre validate hook
+		$this->call_hook('pre_validate');
 
 		if ($this->validate())
 		{
+			$hook_params = array('form' => $this, 'post' => $_POST);
+
+			// post validate hook
+			$this->call_hook('post_validate');
 
 			if ($this->fuel->pages->mode() != 'views' && $this->is_save_entries())
 			{
@@ -648,7 +654,12 @@ class Fuel_form extends Fuel_base_library {
 
 				if ($this->CI->db->table_exists('form_entries'))
 				{
+
+					// pre save hook
+					$this->call_hook('pre_save');
+
 					$posted = $this->clean_posted();
+
 					$model =& $this->CI->fuel->forms->model('form_entries');
 					$entry = $model->create();
 					$entry->url = last_url();
@@ -656,17 +667,24 @@ class Fuel_form extends Fuel_base_library {
 					$entry->form_id = $this->id;
 					$entry->remote_ip = $_SERVER['REMOTE_ADDR'];
 					$entry->fill($posted);
+
 					if (!$entry->save())
 					{
+						$this->run_hook('error', array('errors' => $entry->errors()));
 						return FALSE;
 					}
+					$this->run_hook('post_save');
 				}
 			}
 
-			if (!$this->notify($msg))
+			$this->run_hook('pre_notify');
+
+			if (!$this->notify())
 			{
+				$this->run_hook('error');
 				return FALSE;
 			}
+			$this->run_hook('success');
 			return TRUE;
 		}
 		return FALSE;		
@@ -760,6 +778,61 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
+	 * Sets a callback hook to be run via "pre" or "post" rendering of the page
+	 *
+	 * @access	public
+	 * @param	key		The type of hook (e.g. "pre_render" or "post_render")
+	 * @param	array	An array of hook information including the class/callback function. <a href="http://ellislab.com/codeigniter/user-guide/general/hooks.html" target="blank">More here</a>
+	 * @return	void
+	 */
+	public function set_hook($type, $hook)
+	{
+		$this->hooks[$type] = $hook;
+	}
+	
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Calls a specified hook to be run
+	 *
+	 * @access	public
+	 * @param	hook	The type of hook (e.g. "pre_render" or "post_render")
+	 * @param	array	An array of additional parameters to pass to the hook method/function
+	 * @return	void
+	 */
+	public function call_hook($hook, $params = array())
+	{
+		$default_params['form'] =& $this;
+		$default_params['post'] = $_POST;
+		$params = array_merge($default_params, $params);
+
+		if (!empty($this->hooks[$hook]) AND is_callable($this->hooks[$hook]))
+		{
+			return call_user_func_array($this->hooks[$hook], $params);
+		}
+		else
+		{
+			// call hooks set in hooks file
+			$hook_name = 'form_'.$hook;
+			
+			if (!empty($this->hooks[$hook]))
+			{
+				if (isset($GLOBALS['EXT']->hooks[$hook_name]) AND !is_array($GLOBALS['EXT']->hooks[$hook_name]))
+				{
+					$GLOBALS['EXT']->hooks[$hook_name] = array($GLOBALS['EXT']->hooks[$hook_name]);
+				}
+				$GLOBALS['EXT']->hooks[$hook_name][] = $this->hooks[$hook];
+			}
+
+			// run any hooks set on the object
+			return $GLOBALS['EXT']->_call_hook($hook_name, $params);
+		}
+	
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
 	 * Sends email notification to those specified in the email_recipients field. Is called within the process method as well.
 	 * 
 	 <code>
@@ -775,11 +848,16 @@ class Fuel_form extends Fuel_base_library {
 	 </code>
 	 *
 	 * @access	public
-	 * @param   string   The message to send
+	 * @param   string   The message to send (optional)
 	 * @return	boolean  Returns TRUE/FALSE based on if the form validates or not. Is called during the "process" method as well
 	 */	
-	public function notify($msg)
+	public function notify($msg = NULL)
 	{
+		if (empty($msg))
+		{
+			$msg = $this->get_email_message();
+		}
+
 		if ($this->has_email_recipients())
 		{
 			$this->CI->load->library('email');
