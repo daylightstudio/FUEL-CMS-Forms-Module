@@ -13,6 +13,7 @@ class Forms extends CI_Controller {
 		$form = $this->fuel->forms->get($slug);
 
 		$return_url = ($this->input->get_post('return_url')) ? $this->input->get_post('return_url') : $form->get_return_url();
+		$form_url = $this->input->get_post('form_url');
 
 		if ($form AND $form->process())
 		{
@@ -42,6 +43,9 @@ class Forms extends CI_Controller {
 			}
 			else
 			{
+				if (!empty($form_url) && ($form_url != $return_url)) {
+					$return_url = $form_url; // update to post back to the correct page when there's an error
+				}
 				$this->session->set_flashdata('error', $form->errors());
 				redirect($return_url);
 			}
