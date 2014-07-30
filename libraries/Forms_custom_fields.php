@@ -183,10 +183,12 @@ class Forms_custom_fields {
 		$spam_check1 = rand(0, 9);
 		$spam_check2 = rand(0, 100);
 		$answer = $spam_check1 + $spam_check2;
-		$this->CI->session->set_flashdata('check_spam', $answer);
+		if (!$form_builder->is_post_processing)
+		{
+			$this->CI->session->set_flashdata('check_spam', $answer);
+		}
 
 		$field = array('type' => 'text', 'name' => 'antispam', 'placeholder' => '?', 'size' => 3, 'display_label' => FALSE, 'before_html' => $spam_check1." + ".$spam_check2." = ");
-
 		return $form_builder->create_field($field);
 	}
 
