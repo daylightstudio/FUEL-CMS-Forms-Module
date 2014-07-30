@@ -1015,6 +1015,7 @@ class Fuel_form extends Fuel_base_library {
 			$form_fields['__antispam__'] = array_merge($form_fields['__antispam__'], $antispam_params);
 		}
 		$form_fields['return_url'] = array('type' => 'hidden', 'value' => $this->get_return_url());
+		$form_fields['form_url'] = array('type' => 'hidden', 'value' => current_url());
 
 		return $form_fields;
 	}
