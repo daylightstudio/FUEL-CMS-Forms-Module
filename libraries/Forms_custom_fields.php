@@ -164,6 +164,13 @@ class Forms_custom_fields {
 	 */	
 	public function equation($params = array())
 	{
+		// check if session is already started and if not, start one
+		$session_id = session_id();
+		if (empty($session_id))
+		{
+			session_start();
+		}
+
 		$form_builder =& $params['instance'];
 
 		$defaults = array('name_field' => '', 'error_message' => 'Please enter in a valid answer to the spam check.');
@@ -174,7 +181,7 @@ class Forms_custom_fields {
 			$func_str = '$CI =& get_instance();
 				$validator =& $CI->form_builder->get_validator();
 				$validator->add_rule("antispam", "required", "'.$params['error_message'].'", array("'.$this->CI->input->post('antispam').'"));
-				$validator->add_rule("antispam", "is_equal_to", "'.$params['error_message'].'", array("'.$this->CI->input->post('antispam').'", "'.$this->CI->session->flashdata('check_spam').'"));
+				$validator->add_rule("antispam", "is_equal_to", "'.$params['error_message'].'", array("'.$this->CI->input->post('antispam').'", "'.$_SESSION['check_spam'].'"));
 				';
 			$func = create_function('$value', $func_str);
 			$form_builder->set_post_process($params['key'], $func);
@@ -185,7 +192,9 @@ class Forms_custom_fields {
 		$answer = $spam_check1 + $spam_check2;
 		if (!$form_builder->is_post_processing)
 		{
-			$this->CI->session->set_flashdata('check_spam', $answer);
+			$_SESSION['check_spam'] = $answer;
+			// using same session is probablematic with FUEL when dealing with Flash data
+			//$this->CI->session->set_flashdata('check_spam', $answer);
 		}
 
 		$field = array('type' => 'text', 'name' => 'antispam', 'placeholder' => '?', 'size' => 3, 'display_label' => FALSE, 'before_html' => $spam_check1." + ".$spam_check2." = ");
