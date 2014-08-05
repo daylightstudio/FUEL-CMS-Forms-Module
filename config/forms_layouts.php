@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 |--------------------------------------------------------------------------
 | MY Custom Layouts
@@ -122,6 +122,37 @@ $config['blocks']['hidden'] = array(
 	'model'    => array('forms' => 'forms_model'),
 );
 
+$config['blocks']['file'] = array(
+	'group'    => 'Forms',
+	'class'    => 'Base_field_layout',
+	'filepath' => 'libraries/layouts',
+	'module'   => 'forms',
+	'model'    => array('forms' => 'forms_model'),
+);
+
+$config['blocks']['section'] = array(
+	'group'    => 'Forms',
+	'class'    => 'Base_field_layout',
+	'filepath' => 'libraries/layouts',
+	'module'   => 'forms',
+	'model'    => array('forms' => 'forms_model'),
+);
+
+$config['blocks']['fieldset'] = array(
+	'group'    => 'Forms',
+	'class'    => 'Base_field_layout',
+	'filepath' => 'libraries/layouts',
+	'module'   => 'forms',
+	'model'    => array('forms' => 'forms_model'),
+);
+
+$config['blocks']['copy'] = array(
+	'group'    => 'Forms',
+	'class'    => 'Base_field_layout',
+	'filepath' => 'libraries/layouts',
+	'module'   => 'forms',
+	'model'    => array('forms' => 'forms_model'),
+);
+
 /* End of file MY_fuellayouts.php */
 /* Location: ./application/config/MY_fuellayouts.php */
-
