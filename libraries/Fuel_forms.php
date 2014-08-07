@@ -812,6 +812,7 @@ class Fuel_form extends Fuel_base_library {
 	{
 		$default_params['form'] =& $this;
 		$default_params['post'] = $_POST;
+		$default_params['hook'] = $hook;
 		$params = array_merge($default_params, $params);
 
 		if (!empty($this->hooks[$hook]) AND is_callable($this->hooks[$hook]))
