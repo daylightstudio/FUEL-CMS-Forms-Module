@@ -1250,6 +1250,8 @@ class Fuel_form extends Fuel_base_library {
 	 */	
 	protected function get_email_message()
 	{
+		$this->CI->load->helper('inflector');
+
 		$output = '';
 
 		$fields = $this->fields;
