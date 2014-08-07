@@ -677,21 +677,21 @@ class Fuel_form extends Fuel_base_library {
 
 					if (!$entry->save())
 					{
-						$this->run_hook('error', array('errors' => $entry->errors()));
+						$this->call_hook('error', array('errors' => $entry->errors()));
 						return FALSE;
 					}
-					$this->run_hook('post_save'); 
+					$this->call_hook('post_save'); 
 				}
 			}
 
-			$this->run_hook('pre_notify');
+			$this->call_hook('pre_notify');
 
 			if (!$this->notify())
 			{
-				$this->run_hook('error', array('errors' => $this->last_error()));
+				$this->call_hook('error', array('errors' => $this->last_error()));
 				return FALSE;
 			}
-			$this->run_hook('success');
+			$this->call_hook('success');
 			return TRUE;
 		}
 		return FALSE;		
