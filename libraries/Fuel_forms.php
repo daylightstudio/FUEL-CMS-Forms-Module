@@ -1074,13 +1074,14 @@ class Fuel_form extends Fuel_base_library {
 	
 	/**
 	 * Returns an array of posted form variables that can be used for capturing in the database or sent via email
-	 * 
+	 *
 	 * @access	protected
-	 * @return	array 
-	 */	
+	 * @param	array $posted
+	 * @return	array
+	 */
 	protected function clean_posted($posted = array())
 	{
-		if (empty($posted)) 
+		if (empty($posted))
 		{
 			$posted = $this->CI->input->post(NULL, TRUE);
 		}
@@ -1091,11 +1092,15 @@ class Fuel_form extends Fuel_base_library {
 
 			foreach($posted as $key => $val)
 			{
-				if (!preg_match('#^_.+#', $val) AND isset($fields[$key]) AND $fields[$key]->type != 'hidden')
+				if (preg_match('#^_.+#', $key) OR empty($fields[$key]) OR ($fields[$key]->type == 'hidden'))
 				{
-					$return[$key] = strip_tags($val);
+					continue;
 				}
-			}	
+				if (is_array($val)) {
+					$val = implode(', ', $val);
+				}
+				$return[$key] = strip_tags($val);
+			}
 		}
 		return $return;
 	}
