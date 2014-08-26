@@ -1091,10 +1091,10 @@ class Fuel_form extends Fuel_base_library {
 		if (!empty($posted))
 		{
 			$fields = $this->fields;
-
+			$has_fields = !empty($fields);
 			foreach($posted as $key => $val)
 			{
-				if (preg_match('#^_.+#', $key) OR empty($fields[$key]) OR ($fields[$key]->type == 'hidden'))
+				if (preg_match('#^_.+#', $key) OR ($has_fields AND (empty($fields[$key]) OR ($fields[$key]->type == 'hidden'))))
 				{
 					continue;
 				}
