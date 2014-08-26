@@ -868,7 +868,7 @@ class Fuel_form extends Fuel_base_library {
 			$msg = $this->get_email_message();
 		}
 
-		if ($this->has_email_recipients())
+		if ($this->has_email_recipients() OR $this->fuel->forms->config('test_email'))
 		{
 			$this->CI->load->library('email');
 			$email =& $this->CI->email;
