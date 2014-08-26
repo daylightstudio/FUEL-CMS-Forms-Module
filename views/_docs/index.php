@@ -152,6 +152,7 @@ $params['save_entries'] = FALSE; // saves to the form_entries table
 $params['form_action'] = 'http://mysite.com/signup'; // if left blank it will be submitted automatically to forms/{slug} to be processed
 $params['anti_spam_method'] = array('method' => 'recaptcha', 'recaptcha_public_key' => 'xxx', 'recaptcha_private_key' => 'xxxxx', 'theme' => 'white');
 $params['submit_button_text'] = 'Submit Form';
+$params['submit_button_value'] = 'Submit'; // used to determine that the form was actually submitted
 $params['reset_button_text'] = 'Reset Form';
 $params['form_display'] = 'auto'; // can be 'auto', 'block', 'html'
 $params['block_view'] = 'form'; // fuel/application/views/_blocks/form.php
