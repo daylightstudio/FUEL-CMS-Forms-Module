@@ -113,7 +113,7 @@ class Fuel_forms extends Fuel_advanced_module {
 
 				// additional check that their are correct fields for returning the form since it's a pretty generic name for a table
 				$fields = $forms_model->fields();
-				if (in_array('name', $fields) AND in_array('slug', $name))
+				if (in_array('name', $fields) AND in_array('slug', $fields))
 				{
 					$forms_model->db()->where(array('name' => $name));
 					$forms_model->db()->or_where(array('slug' => $name));
@@ -250,6 +250,7 @@ class Fuel_form extends Fuel_base_library {
 	protected $form_action = ''; // The URL in which to submit the form. If none is provided, one will be automatically created
 	protected $anti_spam_method = array('method' => 'honeypot'); // The method to use to combat SPAM. Options are 'honeypot', 'equation', 'recaptcha' or 'akismet'.
 	protected $submit_button_text = 'Submit'; // The text to display for the submit button
+	protected $submit_button_value = 'Submit'; // The value used to check that the form was actually submitted. Can't rely on just $_POST not being empty
 	protected $reset_button_text = ''; // The text to display for the reset button
 	protected $form_display = 'auto'; // The method in which to options are 'auto', 'block', 'html'
 	protected $block_view = ''; // The name of the block view file  (only necessary if form_display is set to "block")
@@ -334,7 +335,7 @@ class Fuel_form extends Fuel_base_library {
 		$this->CI->load->library('session');
 
 		// process request
-		if (!empty($_POST))
+		if (!empty($_POST[$this->submit_button_value]))
 		{
 			$this->process();
 		}
