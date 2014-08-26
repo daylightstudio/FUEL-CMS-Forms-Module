@@ -67,31 +67,8 @@ class Forms_model extends Base_module_model {
 
 		// form
 		$fields['Form'] = array('type' => 'fieldset', 'order' => 100, 'class' => 'tab');
-		$fields['form_display'] = array('type' => 'enum', 'order' => 102, 'options' => array('auto' => 'auto', 'block' => 'block', 'html' => 'html'), 'comment' => 'Select which method you\'d like to use to render the form', 
-			'class' => 'form_display_option',
-			'js' => '<script>
-			$(function(){
-				var toggler = function(elem){
-					$("#block_view, #form_html").closest("tr").hide();
-					switch($(elem).val()){
-						case "html":
-							$("#form_html").closest("tr").show();
-							break;
-						case "block":
-							$("#block_view").closest("tr").show();
-							break;
-						default:
+		$fields['form_display'] = array('type' => 'toggler', 'prefix' => 'toggle_', 'order' => 102, 'options' => array('auto' => 'auto', 'block' => 'block', 'html' => 'html'), 'comment' => 'Select which method you\'d like to use to render the form');
 
-					}
-					
-				}
-				$(".form_display_option").change(function(e){
-					toggler(this)
-				})
-
-				toggler("#form_display");
-			});
-			</script>');
 		$block_view_module = (!empty($values['block_view_module'])) ? $values['block_view_module'] : '';
 		$block_view_module_field = array('name' => 'block_view_module', 'type' => 'select', 'options' => $this->fuel->modules->options_list(TRUE), 'first_option' => 'application', 'value' => $block_view_module);
 		$module_view = $this->form_builder->create_select($block_view_module_field);
