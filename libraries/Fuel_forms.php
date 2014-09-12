@@ -878,7 +878,7 @@ class Fuel_form extends Fuel_base_library {
 			$email->from($this->fuel->forms->config('email_from'));
 
 			// Set the email subject
-			$email->subject($this->fuel->forms->config('email_from'));
+			$email->subject($this->get_email_subject());
 
 			// check config if we are in dev mode
 			if (is_dev_mode())
