@@ -36,7 +36,7 @@ class Forms extends CI_Controller {
 
 			if (is_ajax())
 			{
-				// Set a 200 (okay) response code.
+				// Set a 500 (bad) response code.
 				set_status_header('500');
 				echo display_errors(NULL, '');
 				exit();
