@@ -889,7 +889,6 @@ class Fuel_form extends Fuel_base_library {
 			}
 			else
 			{
-				// need to fill this out to work
 				$email->to($this->email_recipients);
 				$email->cc($this->email_cc);
 				$email->bcc($this->email_bcc);
@@ -903,9 +902,7 @@ class Fuel_form extends Fuel_base_library {
 			{
 				if (is_dev_mode())
 				{
-					echo '<pre>';
-					print_r($email->print_debugger());
-					echo '</pre>';
+					echo $email->print_debugger();
 					exit();
 				}
 				$this->_add_error(lang('forms_error_sending_email'));
