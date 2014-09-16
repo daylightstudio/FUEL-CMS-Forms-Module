@@ -10,7 +10,7 @@
 	<li>Automatic validation of common fields and provides ways to add your own custom validation</li>
 	<li>Both javascript submit and validation as well as server side</li>
 	<li>Specify a return URL</li>
-	<li>Hooks into various parts of the processing of the email</li>
+	<li>Hooks into various parts of the processing of the email that gets sent</li>
 </ul>
 
 <h2>Hooks</h2>
@@ -99,7 +99,7 @@ echo $form->render();
 <h3>Customizing the HTML</h3>
 <p>There are several ways to generate the HTML for the form. The first option is to use "auto" which will use the <a href="http://docs.getfuelcms.com/libraries/form_builder" target="_blank">Form_builder</a> class to generate the form based on
 the fields you've specified. Fields can be specified in the CMS, or passed in under the 'fields' parameter as demonstrated in the above example. The second option is to use a block view and the third is to simply use an HTML string.
-In both cases, you will automatically have several varables passed to it included a <dfn>$fields</dfn> array which contains an array of all the the rendered fields, their labels, and their "key" values. It also will pass variables of <dfn>email_field</dfn> and <dfn>email_label</dfn> where "email" is the name of the field.
+In both cases, you will automatically have several variables passed to it included a <dfn>$fields</dfn> array which contains an array of all the the rendered fields, their labels, and their "key" values. It also will pass variables of <dfn>email_field</dfn> and <dfn>email_label</dfn> where "email" is the name of the field.
 You can then use the following in your block view or HTML:
 </p>
 
