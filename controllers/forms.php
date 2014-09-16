@@ -8,7 +8,7 @@ class Forms extends CI_Controller {
 		$this->load->library('session');
 	}
 
-	public function _remap($slug)
+	public function process($slug)
 	{
 		$form = $this->fuel->forms->get($slug);
 

@@ -1181,7 +1181,7 @@ class Fuel_form extends Fuel_base_library {
 		{
 			// if ($this->fuel->forms->config('javascript_submit'))
 			// {
-				return site_url('forms/'.$this->slug);
+				return site_url('forms/process/'.$this->slug);
 			//}
 			//return site_url(uri_path());	
 		}
