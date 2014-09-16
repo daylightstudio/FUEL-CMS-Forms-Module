@@ -166,14 +166,14 @@ class Fuel_forms extends Fuel_advanced_module {
 		return $this->fuel->layouts->get($layout, 'block');
 	}
 
-		// --------------------------------------------------------------------
+	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns all the entries for a given prom
+	 * Returns all the entries for a given form
 	 *
 	 * @access	public
 	 * @param	string start date
-	 * @param	mixed end date
+	 * @param	string end date
 	 * @return	array
 	 */	
 	public function all_entries_by_date($start_date, $end_date)
@@ -291,7 +291,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Initialize the backup object
+	 * Initialize the object.
 	 *
 	 * Accepts an associative array as input, containing preferences.
 	 * Also will set the values in the config as properties of this object
@@ -412,7 +412,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Adds a field to the form. This can also be done by passing the "fields" parameter when creating a a form. 
+	 * Adds a field to the form. This can also be done by passing the "fields" parameter when creating a form. 
 	 * 
 	 <code>$form = $this->fuel->forms->create('myform', array('fields' => array('name' => array('required' => TRUE))));</code>
 	 *
@@ -472,7 +472,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Adds validation to a form.
+	 * Adds validation to a form. Note that you can pass {...} placeholders that represent $_POST values
 	 * 
 	 <code>
 	 $validation = array('name', 'is_equal_to', 'Please make sure the passwords match', array('{password}', '{password2'));
@@ -525,7 +525,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Adds a single validation rule to the validator object
+	 * Adds a single validation rule to the validator object.
 	 * 
 	 * @access	protected
 	 * @return	object 	Returns the validator object 
@@ -701,7 +701,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Validates the form before submission
+	 * Validates the form before submission.
 	 * 
 	 <code>
 	$form = $this->fuel->forms->get('myform');
@@ -787,7 +787,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Sets a callback hook to be run via "pre" or "post" rendering of the page
+	 * Sets a callback hook to be run via "pre" or "post" rendering of the page.
 	 *
 	 * @access	public
 	 * @param	key		The type of hook (e.g. "pre_render" or "post_render")
@@ -802,7 +802,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Calls a specified hook to be run
+	 * Calls a specified hook to be run.
 	 *
 	 * @access	public
 	 * @param	hook	The type of hook (e.g. "pre_validate" or "pre_save")
@@ -951,7 +951,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the rendered form fields as variables which can be consumbed by views/blocks and including an array of rendered field output, labels, and the form object itself.
+	 * Returns the rendered form fields as variables which can be consumed by views/blocks and includes an array of rendered field output, labels, and the form object itself.
 	 * 
 	 <code>
 	$form = $this->fuel->forms->create('myform', array('fields' => array('name' => array('required' => TRUE), 'email' => array('required' => TRUE))));
@@ -982,7 +982,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns an array of form fields that can be used with the Form_builder class
+	 * Returns an array of form fields that can be used with the Form_builder class.
 	 * 
 	 <code>
 	$form = $this->fuel->forms->create('myform', array('fields' => array('name' => array('required' => TRUE), 'email' => array('required' => TRUE))));
@@ -1022,7 +1022,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Returns the validator object used for validating the front end
+	 * Returns the validator object used for validating the front end.
 	 *
 	 * @access	protected
 	 * @return	object
@@ -1051,7 +1051,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns information about the anti SPAM method to use for the form
+	 * Returns information about the anti SPAM method to use for the form.
 	 * 
 	 * @access	protected
 	 * @return	array 
@@ -1072,7 +1072,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns an array of posted form variables that can be used for capturing in the database or sent via email
+	 * Returns an array of posted form variables that can be used for capturing to a database or sent via email.
 	 *
 	 * @access	protected
 	 * @param	array $posted
@@ -1107,7 +1107,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Runs validation found within the forms configuration if a form is created within the $config['forms']['forms']
+	 * Runs validation found within the forms configuration if a form is created within the $config['forms']['forms'].
 	 * 
 	 * @access	protected
 	 * @return	object 	Returns the validator object 
@@ -1170,7 +1170,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the form "action" URL. If no value is specified it will be "forms/{slug}"
+	 * Returns the form "action" URL. If no value is specified it will be "forms/{slug}".
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1208,7 +1208,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the the email's from value and will pull from the form's config file if no value is set
+	 * Returns the the email's from value and will pull from the form's config file if no value is set.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1225,7 +1225,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the the email's subject line and will pull from the form's config file if no value is set
+	 * Returns the the email's subject line and will pull from the form's config file if no value is set.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1242,7 +1242,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the the email's subject line and will pull from the form's config file if no value is set
+	 * Returns the the email's subject line and will pull from the form's config file if no value is set.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1279,7 +1279,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Gets the return URL to be used after the submission of the form
+	 * Gets the return URL to be used after the submission of the form.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1296,7 +1296,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the submit button text
+	 * Returns the submit button text.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1313,7 +1313,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the reset button text
+	 * Returns the reset button text.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1326,7 +1326,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the text to be display after submisssion
+	 * Returns the text to be display after submisssion.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1343,7 +1343,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Magic method for capturing method calls on the record object that don't exist. Allows for "get_{field}" to map to just "{field}" as well as "is_{field}"" and "has_{field}"
+	 * Magic method for capturing method calls on the record object that don't exist. Allows for "get_{field}" to map to just "{field}" as well as "is_{field}"" and "has_{field}".
 	 *
 	 * @access	public
 	 * @param	object	method name
@@ -1393,7 +1393,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Magic method to set first property, method, then field values
+	 * Magic method to set first property, method, then field values.
 	 *
 	 * @access	public
 	 * @param	string	field name
@@ -1420,7 +1420,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Magic method to return first property, method, then field values 
+	 * Magic method to return first property, method, then field values.
 	 *
 	 * @access	public
 	 * @param	string	field name
@@ -1494,7 +1494,7 @@ class Form_field extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the values of the form fields in an array
+	 * Returns the values of the form fields in an array.
 	 *
 	 * @access	protected
 	 * @return	array
@@ -1507,7 +1507,7 @@ class Form_field extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns TRUE/FALSE depending on if the field is considered required
+	 * Returns TRUE/FALSE depending on if the field is considered required.
 	 *
 	 * @access	protected
 	 * @return	boolean
@@ -1520,7 +1520,7 @@ class Form_field extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Renders the form field
+	 * Renders the form field.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1544,7 +1544,7 @@ class Form_field extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the label value
+	 * Returns the label value.
 	 *
 	 * @access	protected
 	 * @return	string
@@ -1561,7 +1561,7 @@ class Form_field extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Magic method to set first property, method, then field values
+	 * Magic method to set first property, method, then field values.
 	 *
 	 * @access	public
 	 * @param	string	field name
@@ -1584,7 +1584,7 @@ class Form_field extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Magic method to return first property, method, then field values 
+	 * Magic method to return first property, method, then field values.
 	 *
 	 * @access	public
 	 * @param	string	field name
@@ -1611,7 +1611,7 @@ class Form_field extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Magic method that returns TRUE/FALSE depending if the parameter is set
+	 * Magic method that returns TRUE/FALSE depending if the parameter is set.
 	 *
 	 * @access	public
 	 * @param	string	field name
