@@ -44,4 +44,4 @@ To access the documentation, you can visit it [here](http://docs.getfuelcms.com/
 To file a bug report, go to the [issues](https://github.com/daylightstudio/FUEL-CMS-Forms-Module/issues) page.
 
 ## LICENSE
-The forms Module for FUEL CMS is licensed under [APACHE 2](http://www.apache.org/licenses/LICENSE-2.0).
+The Forms Module for FUEL CMS is licensed under [APACHE 2](http://www.apache.org/licenses/LICENSE-2.0).
