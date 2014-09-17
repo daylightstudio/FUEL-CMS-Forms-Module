@@ -16,7 +16,7 @@ $config['modules']['form_entries'] = array(
 	'rows_selectable' => FALSE,
 	'clear_cache_on_save' => FALSE,
 	'filters' => array(
-					'form_id' => array('type' => 'select', 'label' => 'Forms', 'model' => array(FUEL_FOLDER => 'forms_model'), 'first_option' => 'Select a form...')
+					'form_id' => array('type' => 'select', 'label' => 'Forms', 'model' => array(FORMS_FOLDER => 'forms_model'), 'first_option' => 'Select a form...')
 
 				)
 
