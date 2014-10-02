@@ -33,7 +33,7 @@ $config['forms']['custom_fields'] = array();
 $config['forms']['test_email'] = array();
 
 // The default from address to use when sending email notifications
-$config['forms']['email_from'] = 'Website Form Submission <website@'.$_SERVER['SERVER_NAME'].'.com>';
+$config['forms']['email_from'] = 'Website Form Submission <website@'.$_SERVER['SERVER_NAME'].'>';
 
 // The testing email address for when then application is not in production
 $config['forms']['email_subject'] = 'Website Form';
