@@ -83,20 +83,20 @@ function blacklisted($ips = array())
  * @param	string	The name of the person submitting the form. Will pull from post
  * @param	string	The email address of the person submitting the form
  * @param	string	The message being submitted
+ * @param	boolean	Determines whether to log errors or not
  * @return	boolean
  */
-function validate_akismet($api_key, $name, $email, $msg)
+function validate_akismet($api_key, $name, $email, $msg, $log = TRUE)
 {
 	$CI =& get_instance();
 
 	if ($api_key AND $name AND $email AND $msg)
 	{
-
 		$CI->load->module_library(FORMS_FOLDER, 'antispam/akismet');
 		$akismet =& $CI->akismet;
 
 		$akisment_comment = array(
-			'author'	=> $name,
+			'author'	=> $name, //  viagra-test-123 to trigger spam
 			'email'		=> $email,
 			'body'		=> $msg
 		);
@@ -108,7 +108,7 @@ function validate_akismet($api_key, $name, $email, $msg)
 		);
 
 		$akismet->init($config);
-		if ( $akismet->errors_exist() )
+		if ( $akismet->errors_exist() AND $log)
 		{				
 			if ( $akismet->is_error('AKISMET_INVALID_KEY') )
 			{
@@ -125,7 +125,7 @@ function validate_akismet($api_key, $name, $email, $msg)
 		}
 		else
 		{
-			return $akismet->is_spam();
+			return !$akismet->is_spam();
 		}
 	}
 
@@ -143,10 +143,65 @@ function validate_akismet($api_key, $name, $email, $msg)
  * @return	boolean
  */
 function validate_recaptcha($private_key)
+{
+	$resp = recaptcha_check_answer ($private_key,
+									$_SERVER["REMOTE_ADDR"],
+									$_POST["recaptcha_challenge_field"],
+									$_POST["recaptcha_response_field"]);
+	return $resp->is_valid;
+}
+
+
+// --------------------------------------------------------------------
+
+/**
+ * Returns TRUE/FALSE as to whether the passed parameters get through Stopforumspam.com's API. 
+ * Used during validation as well as to determin entries is_spam value.
+ * 
+ * @access	public
+ * @param	string	The username/name of the person submitting the form. Will pull from post
+ * @param	string	The email address of the person submitting the form 
+ * @param	string	The IP being submitted (optional)
+ * @param	boolean	Determines whether to log errors or not (optional)
+ * @return	boolean
+ */
+function validate_stopforumspam($name, $email, $ip = NULL, $thresholds = array(), $log = TRUE)
+{
+	$CI =& get_instance();
+	if (is_array($name))
 	{
-		$resp = recaptcha_check_answer ($private_key,
-										$_SERVER["REMOTE_ADDR"],
-										$_POST["recaptcha_challenge_field"],
-										$_POST["recaptcha_response_field"]);
-		return $resp->is_valid;
+		extract($name);
 	}
+	if (empty($ip))
+	{
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+
+	$to_check = array(
+		'username'	=> $name,
+		'email'		=> $email,
+		'ip'		=> $ip
+	);
+
+	// known spammer for testing...
+	// $to_check['username'] = 'JHannam';
+	// $to_check['email'] = 'cooneyursula4916@yahoo.com';
+	// $to_check['ip'] = '23.95.105.75';
+
+	$CI->load->module_library(FORMS_FOLDER, 'antispam/stopforumspam');
+	$CI->stopforumspam->set_config($thresholds);
+	$is_spam = $CI->stopforumspam->check($to_check);
+
+	if ($CI->stopforumspam->has_errors())
+	{
+		if ($log)
+		{
+			log_message('error', 'STOPFORUMSPAM :: '.$CI->stopforumspam->last_error());	
+		}
+		return FALSE;
+	}
+	else
+	{
+		return !$is_spam;
+	}
+}

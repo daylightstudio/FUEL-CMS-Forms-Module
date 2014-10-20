@@ -72,7 +72,11 @@ class Fuel_forms extends Fuel_advanced_module {
 	public function create($name, $params = array())
 	{
 		$params['name'] = $name;
-		$params['slug'] = url_title($name, '-', TRUE);
+
+		if (empty($params['slug']))
+		{
+			$params['slug'] = url_title($name, '-', TRUE);	
+		}
 
 		$form = new Fuel_form();
 		$form->initialize($params);
@@ -139,6 +143,12 @@ class Fuel_forms extends Fuel_advanced_module {
 			if (isset($forms[$name]))
 			{
 				$params = $forms[$name];
+
+				// set the name of the module
+				if (!empty($forms[$name]['name']))
+				{
+					$name = $forms[$name]['name'];
+				}
 			}
 			else
 			{
@@ -203,6 +213,35 @@ class Fuel_forms extends Fuel_advanced_module {
 		//$this->CI->form_entries_model->debug_query();
 		return $return;
 	}
+
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Returns a key value list of all the forms (used for dropdwons)
+	 *
+	 * @access	public
+	 * @param	string The type of form either "db" (found in the database) or "config" (found in the config)
+	 * @return	array
+	 */	
+	public function options_list($type = NULL)
+	{
+		$options = array();
+		if (strtolower($type) == 'db' OR is_null($type))
+		{
+			$forms_model = $this->model('forms');
+			$options = $forms_model->options_list('slug', 'name');
+		}
+		if (strtolower($type) == 'config' OR is_null($type))
+		{
+			$forms = $this->config('forms');
+			foreach($forms as $key => $val)
+			{
+				$options[$key] = $val['name'];
+			}
+		}
+		return $options;
+	}
 	
 	// --------------------------------------------------------------------
 	
@@ -248,7 +287,7 @@ class Fuel_form extends Fuel_base_library {
 	protected $slug = ''; // A slug value which can be passed to forms/{slug} for processing the form
 	protected $save_entries = FALSE; // Determines whether to save the entries into the database
 	protected $form_action = ''; // The URL in which to submit the form. If none is provided, one will be automatically created
-	protected $anti_spam_method = array('method' => 'honeypot'); // The method to use to combat SPAM. Options are 'honeypot', 'equation', 'recaptcha' or 'akismet'.
+	protected $anti_spam_method = array('method' => 'honeypot'); // The method to use to combat SPAM. Options are 'honeypot', 'equation', 'recaptcha', 'stopforumspam' or 'akismet'.
 	protected $submit_button_text = 'Submit'; // The text to display for the submit button
 	protected $submit_button_value = 'Submit'; // The value used to check that the form was actually submitted. Can't rely on just $_POST not being empty
 	protected $reset_button_text = ''; // The text to display for the reset button
@@ -269,6 +308,7 @@ class Fuel_form extends Fuel_base_library {
 	protected $validation = array(); // An array of extra validation rules to run during the submission process beyond 'required' and the rules setup by default for a field type (e.g. valid_email, valid_phone)
 	protected $js = array(); // Additional javascript files to include for the rendering of the form
 	protected $fields = array(); // The fields for the form. This is not required if you are using your own HTML in a block or HTML form_display view
+	protected $form_builder = array(); // Initialization parameters for the Form_builder class used if a form is being auto-generated
 	protected $hooks = array(); // An array of different callable functions associated with one of the predefined hooks "pre_validate", "post_validate", "pre_save", "post_save", "pre_notify", "success", "error" (e.g. 'pre_validate' => 'My_func')
 
 	// --------------------------------------------------------------------
@@ -394,6 +434,7 @@ class Fuel_form extends Fuel_base_library {
 			$this->CI->form_builder->form_attrs = 'novalidate method="post" action="'.$this->get_form_action().'" class="form" id="'.$this->slug.'"'.$ajax_submit.$js_validate.$js_waiting_message;
 			$this->CI->form_builder->display_errors = TRUE;
 			$this->CI->form_builder->required_text = lang('forms_required');
+			$this->CI->form_builder->set_params($this->form_builder);
 			$output .= $this->CI->form_builder->render();
 		}
 		
@@ -640,7 +681,7 @@ class Fuel_form extends Fuel_base_library {
 	public function process()
 	{
 
-		// saved in the post so that it can be validated by post processors like Akismet
+		// saved in the post so that it can be validated by post processors like AKISMET
 		$_POST['__email_message__'] = $this->get_email_message();
 
 		// pre validate hook
@@ -667,21 +708,27 @@ class Fuel_form extends Fuel_base_library {
 					$this->call_hook('pre_save');
 
 					$posted = $this->clean_posted();
-
 					$model =& $this->CI->fuel->forms->model('form_entries');
 					$entry = $model->create();
 					$entry->url = last_url();
 					$entry->post = json_encode($posted);
-					$entry->form_id = $this->id;
+					$entry->form_name = $this->name;
 					$entry->remote_ip = $_SERVER['REMOTE_ADDR'];
+
+					// set if it's SPAM
+					$entry->is_spam = ($this->is_spam($posted)) ? 'yes' : 'no';
 					$entry->fill($posted);
 
-					if (!$entry->save())
+					if ($entry->is_savable())
 					{
-						$this->call_hook('error', array('errors' => $entry->errors()));
-						return FALSE;
+						if (!$entry->save())
+						{
+							$this->call_hook('error', array('errors' => $entry->errors()));
+							return FALSE;
+						}
+						$this->call_hook('post_save'); 
 					}
-					$this->call_hook('post_save'); 
+					
 				}
 			}
 
@@ -696,6 +743,39 @@ class Fuel_form extends Fuel_base_library {
 			return TRUE;
 		}
 		return FALSE;		
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Checks if a form posting has SPAM characteristics
+	 *
+	 * @access	public
+	 * @param	array	Posted form values
+	 * @return	boolean Returns TRUE/FALSE based on if either stopforumspam or AKISMET returns it as SPAM
+	 */	
+	public function is_spam($posted)
+	{
+		$is_spam = FALSE;
+		$anti_spam_params = $this->get_antispam_params();
+		$spam_config = $this->fuel->forms->config('spam_fields');
+		if (isset($posted[$spam_config['name_post_field']]) AND isset($posted[$spam_config['email_post_field']]))
+		{
+
+			// first test AKISMET if a key is provided
+			$akismet_key = $this->fuel->forms->config('akismet_api_key');
+			if (!empty($akismet_key))
+			{
+				$is_spam = (isset($posted[$spam_config['comment_post_field']]) AND !validate_akismet($akismet_key, $posted[$spam_config['name_post_field']], $posted[$spam_config['email_post_field']], $posted[$spam_config['comment_post_field']]));
+			}
+
+			// if still no spam, we'll check stopfurmspam to just be sure
+			if ($is_spam === FALSE)
+			{
+				$is_spam = (!validate_stopforumspam($posted[$spam_config['name_post_field']], $posted[$spam_config['email_post_field']]));
+			}
+		}
+		return $is_spam;
 	}
 
 	// --------------------------------------------------------------------

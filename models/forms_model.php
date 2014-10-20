@@ -132,6 +132,13 @@ class Forms_model extends Base_module_model {
 		return $fields;
 	}
 	
+	// added here to make it easier for the filter
+	public function forms($type = null)
+	{
+		$CI =& get_instance();
+		return $CI->fuel->forms->options_list($type);
+	}
+
 	public function on_before_save($values)
 	{
 		parent::on_before_save($values);

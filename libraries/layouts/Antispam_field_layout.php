@@ -16,8 +16,8 @@ class Antispam_field_layout extends Base_field_layout {
 	 */
 	public function fields()
 	{
-		$fields['method'] = array('type' => 'select', 'class' => 'toggler', 'label' => 'Anti SPAM method',
-			'options' => array('honeypot' => 'honeypot', 'equation' => 'equation', 'recaptcha' => 'recaptcha', 'akismet' => 'akismet'),
+		$fields['method'] = array('type' => 'select', 'class' => 'toggler', 'label' => 'Anti SPAM method', 'first_option' => lang('label_select_one'),
+			'options' => array('stopforumspam' => 'stopforumspam', 'honeypot' => 'honeypot', 'equation' => 'equation', 'recaptcha' => 'recaptcha', 'akismet' => 'akismet'),
 			'js' => '<script>
 			$(function(){
 				var toggler = function(elem){

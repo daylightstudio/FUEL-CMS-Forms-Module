@@ -3,10 +3,11 @@
 
 CREATE TABLE `form_entries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `form_id` int(10) NOT NULL,
+  `form_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `remote_ip` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `post` text COLLATE utf8_unicode_ci NOT NULL,
+  `is_spam` enum('yes','no') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'no',
   `date_added` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

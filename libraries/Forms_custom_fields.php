@@ -36,7 +36,7 @@ class Forms_custom_fields {
 	 * 
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
-	 * @return	array
+	 * @return	string
 	 */	
 	public function recaptcha($params = array())
 	{
@@ -91,7 +91,7 @@ class Forms_custom_fields {
 	 *
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
-	 * @return	array
+	 * @return	string
 	 */	
 	public function akismet($params = array())
 	{
@@ -160,7 +160,7 @@ class Forms_custom_fields {
 	 * 
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
-	 * @return	array
+	 * @return	string
 	 */	
 	public function equation($params = array())
 	{
@@ -204,11 +204,59 @@ class Forms_custom_fields {
 	// --------------------------------------------------------------------
 	
 	/**
+	 * Adds Stopforumspam validation to your form as well as the necessary post processing validation rules.
+	 *
+	 * @access	public
+	 * @param 	array  	An array of parameters to pass to the field type
+	 * @return	string
+	 */	
+	public function stopforumspam($params = array())
+	{
+		$form_builder =& $params['instance'];
+
+		if (empty($params['thresholds']))
+		{
+			$params['thresholds'] = $this->fuel->forms->config('stopforumspam');
+		}
+		else
+		{
+			$params['thresholds'] = array_merge($this->fuel->forms->config('stopforumspam'), $params['thresholds']);
+		}
+		
+		$defaults = array('name_field' => 'name', 'email_field' => 'email', 'message_field' => '__email_message__', 'error_message' => 'Your message has been flagged as SPAM and cannot be submitted.');
+		$params = $this->set_defaults($defaults, $params);
+
+		if (!empty($_POST))
+		{
+			$func_str = '$CI =& get_instance();
+			$thresholds = array();
+			';
+
+			if (!empty($params['thresholds']['ip_threshold_flag']))	$func_str .= '$thresholds["ip_threshold_flag"] = '.$params['thresholds']['ip_threshold_flag'].';';
+			if (!empty($params['thresholds']['email_threshold_flag'])) $func_str .= '$thresholds["email_threshold_flag"] = '.$params['thresholds']['email_threshold_flag'].';';
+			if (!empty($params['thresholds']['ip_threshold_ignore'])) $func_str .= '$thresholds["ip_threshold_ignore"] = '.$params['thresholds']['ip_threshold_ignore'].';';
+			if (!empty($params['thresholds']['email_threshold_ignore'])) $func_str .= '$thresholds["email_threshold_ignore"] = '.$params['thresholds']['email_threshold_ignore'].';';
+
+			$func_str .= '$validator =& $CI->form_builder->get_validator();
+				$validation_params = array("'.$this->CI->input->post($params['name_field']).'", "'.$this->CI->input->post($params['email_field']).'", "'.$_SERVER['REMOTE_ADDR'].'", $thresholds);
+				$validator->add_rule("'.$params['key'].'", "validate_stopforumspam", "'.$params['error_message'].'", $validation_params);
+				';
+			$func = create_function('$value', $func_str);
+			$form_builder->set_post_process($params['key'], $func);
+		}
+
+		// must return a space or else a default field will appear
+		return ' ';
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
 	 * Creates one of the 4 SPAM fields types. You specify the "method" parameter to determine which one to use.
 	 * 
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
-	 * @return	array
+	 * @return	string
 	 */	
 	public function antispam($params = array())
 	{
@@ -217,7 +265,7 @@ class Forms_custom_fields {
 		$defaults = array('method' => 'honeypot');
 		$params = $this->set_defaults($defaults, $params);
 
-		$valid_types = array('akismet', 'recaptcha', 'equation', 'honeypot');
+		$valid_types = array('akismet', 'recaptcha', 'equation', 'honeypot', 'stopforumspam');
 		if (!in_array($params['method'], $valid_types))
 		{
 			return 'Invalid spam method specified';

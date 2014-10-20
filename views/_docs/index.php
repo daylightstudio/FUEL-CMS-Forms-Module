@@ -1,17 +1,18 @@
 <h1>Forms Module Documentation</h1>
 <p>This Forms module documentation is for version <?=FORMS_VERSION?>.</p>
 
-<p>The Forms module gives users the ability to create common forms. It has the following features:</p>
+<p>The Forms module provides a flexible way to create simple to complex forms. This is what you can do with it:</p>
 <ul>
-	<li>Create forms directly in the CMS or by using a block view file</li>
-	<li>Provides several additional <a href="<?=user_guide_url('general/forms')?>">custom field types</a> that can be used for combatting SPAM including a <a href="http://www.dexmedia.com/blog/honeypot-technique/" target="_blank">honeypot</a>, a simple equation, <a href="https://www.google.com/recaptcha/intro/index.html" target="_blank">reCAPTCHA</a>, or <a href="http://akismet.com/" target="blank">Akismet</a></li>
-	<li>Emails specified recipients upon form submission</li>
-	<li>Automatically saves entries into the database which can be exported in a CSV format later</li>
-	<li>Automatic validation of common fields and provides ways to add your own custom validation</li>
-	<li>Both javascript submit and validation as well as server side</li>
+	<li>Create forms in the CMS, as static views, or a combination of the two</li>
+	<li>Use one of the additional <a href="<?=user_guide_url('general/forms')?>">custom field types</a> to combat SPAM including a <a href="http://www.dexmedia.com/blog/honeypot-technique/" target="_blank">honeypot</a>, a simple equation, <a href="https://www.google.com/recaptcha/intro/index.html" target="_blank">reCAPTCHA</a>, <a href="http://www.stopforumspam" target="_blank">stopforumspam</a> or <a href="http://akismet.com/" target="blank">Akismet</a></li>
+	<li>Email specified recipients upon form submission</li>
+	<li>Save entries into the database which can be exported as a CSV file</li>
+	<li>Validate required and common field types like email as well as setup your own custom validation</li>
+	<li>Submit and validate forms via javascript as well as server side</li>
 	<li>Specify a return URL</li>
-	<li>Hooks into various parts of the processing of the email that gets sent</li>
+	<li>Hook into various parts of the processing of the email that gets sent</li>
 </ul>
+
 
 <h2>Hooks</h2>
 <p>There are a number of hooks you can use to add additional processing functionality during the form submission process. You can pass it a callable function or an array with the first index being the object and the second being the method to execute on the object.

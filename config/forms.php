@@ -44,6 +44,29 @@ $config['forms']['blacklist'] = array();
 // Javascript files to include with each form
 $config['forms']['js'] = array();
 
+// Akismet API key if AKISMET is set for the antispam method
+$config['forms']['akismet_api_key'] = '';
+
+// Stopforumspam settings
+$config['forms']['stopforumspam'] = array(
+	'ip_threshold_flag'      => 5,
+	'email_threshold_flag'   => 20,
+	'ip_threshold_ignore'    => 20,
+	'email_threshold_ignore' => 50,
+);
+
+// The fields used for SPAM checking
+$config['forms']['spam_fields'] = array(
+	'email_post_field'       => 'email',
+	'name_post_field'        => 'name',
+	'comment_post_field'     => 'comment',
+);
+
+// Methods to handling spam. Options are, save, disregard
+$config['forms']['save_spam'] = TRUE;
+
+
+
 // Table configurations
 $config['tables']['forms'] = 'forms';
 $config['tables']['form_entries'] = 'form_entries';

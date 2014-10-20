@@ -19,22 +19,21 @@ class Form_entries_model extends Base_module_model {
 	public $belongs_to = array(); // keys are model, which can be a key value pair with the key being the module and the value being the model, module (if not specified in model parameter), relationships_model, foreign_key, candidate_key
 	public $formatters = array(); // an array of helper formatter functions related to a specific field type (e.g. string, datetime, number), or name (e.g. title, content) that can augment field results
 	public $display_unpublished_if_logged_in = FALSE;
-	
+	public $filter_join = 'and'; // how to combine the filters in the query (and or or)
+
 	protected $friendly_name = ''; // a friendlier name of the group of objects
 	protected $singular_name = ''; // a friendly singular name of the object
 	protected $is_export = FALSE;
 
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct('form_entries', FORMS_FOLDER); // table name
 		$this->filters =  array($this->_tables['forms'].'.name', 'post', 'date_added');
 	}
 
-	function list_items($limit = NULL, $offset = NULL, $col = 'date_added', $order = 'desc', $just_count = FALSE)
+	public function list_items($limit = NULL, $offset = NULL, $col = 'date_added', $order = 'desc', $just_count = FALSE)
 	{
-		$this->db->join($this->_tables['forms'], $this->_tables['forms'].'.id = '.$this->_tables['form_entries'].'.form_id', 'LEFT');
-		$this->db->select($this->_tables['form_entries'].'.id, '.$this->_tables['forms'].'.name as form_name, '.$this->_tables['form_entries'].'.remote_ip, '.$this->_tables['form_entries'].'.post, '.$this->_tables['form_entries'].'.date_added');
-
+		$this->db->select($this->_tables['form_entries'].'.id, '.$this->_tables['form_entries'].'.form_name, '.$this->_tables['form_entries'].'.post, '.$this->_tables['form_entries'].'.is_spam, '.$this->_tables['form_entries'].'.remote_ip, '.$this->_tables['form_entries'].'.date_added');
 		$data = parent::list_items($limit, $offset, $col, $order, $just_count = FALSE);
 
 		if (!$this->is_export)
@@ -49,19 +48,19 @@ class Form_entries_model extends Base_module_model {
 		return $data;
 	}
 
-	function form_fields($values = array(), $related = array())
+	public function form_fields($values = array(), $related = array())
 	{	
 		$fields = parent::form_fields($values, $related);
 		return $fields;
 	}
 	
-	function on_before_save($values)
+	public function on_before_save($values)
 	{
 		parent::on_before_save($values);
 		return $values;
 	}
 
-	function on_after_save($values)
+	public function on_after_save($values)
 	{
 		parent::on_after_save($values);
 		return $values;
@@ -79,8 +78,8 @@ class Form_entries_model extends Base_module_model {
 	public function export_data($params = array())
 	{
 		$CI =& get_instance();
-		$form_id = (int) $this->input->post('form_id');
-		$form = $CI->fuel->forms->get($form_id);
+		$form_name = (int) $this->input->post('form_name');
+		$form = $CI->fuel->forms->get($form_name);
 
 		// normalize parameters
 		$valid_params = array('col', 'order');
@@ -152,12 +151,12 @@ class Form_entries_model extends Base_module_model {
 		exit();
 	}
 
-	function _common_query()
+	public function _common_query()
 	{
 		parent::_common_query();
 
 		$this->db->select($this->_tables['form_entries'].'.*, '.$this->_tables['forms'].'.name as form');
-		$this->db->join($this->_tables['forms'], $this->_tables['forms'].'.id = '.$this->_tables['form_entries'].'.form_id', 'LEFT');
+		$this->db->join($this->_tables['forms'], $this->_tables['forms'].'.name = '.$this->_tables['form_entries'].'.form_name', 'LEFT');
 
 		// remove if no precedence column is provided
 		$this->db->order_by('date_added desc');
@@ -168,4 +167,13 @@ class Form_entries_model extends Base_module_model {
 class Form_entry_model extends Base_module_record {
 	
 	// put your record model code here
+	public function is_spam()
+	{
+		return is_true_val($this->is_spam);
+	}
+
+	public function is_savable()
+	{
+		return !$this->is_spam() OR ($this->is_spam() AND $this->_CI->fuel->forms->config('save_spam'));
+	}
 }

@@ -16,7 +16,8 @@ $config['modules']['form_entries'] = array(
 	'rows_selectable' => FALSE,
 	'clear_cache_on_save' => FALSE,
 	'filters' => array(
-					'form_id' => array('type' => 'select', 'label' => 'Forms', 'model' => array(FORMS_FOLDER => 'forms_model'), 'first_option' => 'Select a form...')
+					'form_name' => array('type' => 'select', 'label' => 'Forms', 'model' => array(FORMS_FOLDER => array('forms_model' => 'forms')), 'first_option' => lang('label_select_one')),
+					'is_spam' => array('type' => 'select', 'options' => array('no' => 'no', 'yes' => 'yes'), 'first_option' => lang('label_select_one'))
 
 				)
 
