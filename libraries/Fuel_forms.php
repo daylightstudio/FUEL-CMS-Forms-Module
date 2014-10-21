@@ -430,7 +430,7 @@ class Fuel_form extends Fuel_base_library {
 
 			$ajax_submit = ($this->is_javascript_submit()) ? ' data-ajax="true"' : '';
 			$js_validate = ($this->is_javascript_validate()) ? ' data-validate="true"' : '';
-			$js_waiting_message = ($this->is_javascript_validate()) ? ' data-ajax_message="'.rawurlencode($this->get_javascript_waiting_message()).'"' : '';
+			$js_waiting_message = ($this->is_javascript_validate()) ? ' data-ajax_message="'.rawurlencode($this->javascript_waiting_message).'"' : '';
 			$this->CI->form_builder->form_attrs = 'novalidate method="post" action="'.$this->get_form_action().'" class="form" id="'.$this->slug.'"'.$ajax_submit.$js_validate.$js_waiting_message;
 			$this->CI->form_builder->display_errors = TRUE;
 			$this->CI->form_builder->required_text = lang('forms_required');
