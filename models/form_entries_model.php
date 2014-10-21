@@ -114,7 +114,7 @@ class Form_entries_model extends Base_module_model {
 		// create headings
 		foreach($headings as $heading)
 		{
-			$data[0][$heading] = ucfirst($heading);
+			$data[0][$heading] = ucwords(str_replace(array('_', '-'), ' ', $heading));
 		}
 
 		// now loop through the data and place the data based on all the ehadings
@@ -122,8 +122,9 @@ class Form_entries_model extends Base_module_model {
     	foreach($items as $item)
 		{
 			$post = json_decode($item['post'], TRUE);
+
 			// we don't know what was thrown into the post so we'll remove any values from post that may conflict
-			unset($post['id'], $post['name'], $post['remote_ip'], $post['date_added'], $item['post']);
+			unset($post['id'], $post['remote_ip'], $post['date_added'], $item['post'], $item['is_spam'], $item['form_name']);
 
 			// merge data from post
 			$item = array_merge($item, $post);
@@ -134,7 +135,7 @@ class Form_entries_model extends Base_module_model {
 			}
 			$i++;
 		}
-	
+
 		$filename = (isset($form->id)) ? $form->name : 'forms';
 		$filename .= '_' . date("Ymd") . '.csv';	
 				
