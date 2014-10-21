@@ -9,7 +9,7 @@ class Form_entries_model extends Base_module_model {
 	public $record_class = 'Form_entry'; // the name of the record class (if it can't be determined)
 	public $filters = array(); // filters to apply to when searching for items
 	public $required = array(); // an array of required fields. If a key => val is provided, the key is name of the field and the value is the error message to display
-	public $foreign_keys = array('form_id' => array(FORMS_FOLDER => 'forms_model')); // map foreign keys to table models
+	public $foreign_keys = array('form_name' => array(FORMS_FOLDER => 'forms_model')); // map foreign keys to table models
 	public $linked_fields = array(); // fields that are linked meaning one value helps to determine another. Key is the field, value is a function name to transform it. (e.g. array('slug' => 'title'), or array('slug' => arry('name' => 'strtolower')));
 	public $boolean_fields = array(); // fields that are tinyint and should be treated as boolean
 	public $unique_fields = array(); // fields that are not IDs but are unique. Can also be an array of arrays for compound keys
@@ -50,7 +50,10 @@ class Form_entries_model extends Base_module_model {
 
 	public function form_fields($values = array(), $related = array())
 	{	
+		$CI =& get_instance();
 		$fields = parent::form_fields($values, $related);
+		$fields['form_name']['options'] = $CI->fuel->forms->options_list();
+		$fields['post']['type'] = 'keyval';
 		return $fields;
 	}
 	
