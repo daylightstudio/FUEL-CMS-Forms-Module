@@ -53,7 +53,11 @@ $fields['akismet'] = array(
 	'filepath'	=> '',
 );
 
-
+$fields['stopforumspam'] = array(
+	'class'		=> array(FORMS_FOLDER => 'Forms_custom_fields'),
+	'function'	=> 'stopforumspam',
+	'filepath'	=> '',
+);
 
 
 /* End of file form_builder.php */
