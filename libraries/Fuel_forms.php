@@ -237,7 +237,8 @@ class Fuel_forms extends Fuel_advanced_module {
 			$forms = $this->config('forms');
 			foreach($forms as $key => $val)
 			{
-				$options[$key] = $val['name'];
+				$name = (!empty($val['name'])) ? $val['name'] : $key;
+				$options[$key] = $name;
 			}
 		}
 		return $options;
@@ -304,6 +305,11 @@ class Fuel_form extends Fuel_base_library {
 	protected $email_subject = ''; // The subject line of the email being sent
 	protected $email_message = ''; // The email message to send
 	protected $after_submit_text = ''; // The text/HTML to display after the submission process
+	protected $attach_files = TRUE; // Will automatically attach files to the email sent out
+	protected $attach_file_params = array('upload_path' => 'cache', 'allowed_types' => 'pdf|doc|docx',	'max_size' => '1000'); // An array of parameters used for the CI File Upload class when uploading and attaching files to an email.
+	protected $cleanup_attached = TRUE; // Will remove attached files from the file system after being attached
+	protected $upload_data = array(); // An array of uploaded file information
+	protected $attachments = array(); // An array of files to attach to the recipient email
 	protected $return_url = ''; // The return URL to use after the submission process. It will default to returning back to the page that submitted the form
 	protected $validation = array(); // An array of extra validation rules to run during the submission process beyond 'required' and the rules setup by default for a field type (e.g. valid_email, valid_phone)
 	protected $js = array(); // Additional javascript files to include for the rendering of the form
@@ -431,7 +437,7 @@ class Fuel_form extends Fuel_base_library {
 			$ajax_submit = ($this->is_javascript_submit()) ? ' data-ajax="true"' : '';
 			$js_validate = ($this->is_javascript_validate()) ? ' data-validate="true"' : '';
 			$js_waiting_message = ($this->is_javascript_validate()) ? ' data-ajax_message="'.rawurlencode($this->javascript_waiting_message).'"' : '';
-			$this->CI->form_builder->form_attrs = 'novalidate method="post" action="'.$this->get_form_action().'" class="form" id="'.$this->slug.'"'.$ajax_submit.$js_validate.$js_waiting_message;
+			$this->CI->form_builder->form_attrs = 'novalidate method="post" action="'.$this->get_form_action().'" enctype="multipart/form-data" class="form" id="'.$this->slug.'"'.$ajax_submit.$js_validate.$js_waiting_message;
 			$this->CI->form_builder->display_errors = TRUE;
 			$this->CI->form_builder->required_text = lang('forms_required');
 			$this->CI->form_builder->set_params($this->form_builder);
@@ -680,6 +686,8 @@ class Fuel_form extends Fuel_base_library {
 	 */	
 	public function process()
 	{
+		// pre process hook
+		$this->call_hook('pre_process');
 
 		// saved in the post so that it can be validated by post processors like AKISMET
 		$_POST['__email_message__'] = $this->get_email_message();
@@ -728,13 +736,12 @@ class Fuel_form extends Fuel_base_library {
 						}
 						$this->call_hook('post_save'); 
 					}
-					
 				}
 			}
 
-			$this->call_hook('pre_notify');
+			$this->call_hook('post_process');
 
-			if (!$this->notify())
+			if (!$this->notify($_POST['__email_message__']))
 			{
 				$this->call_hook('error', array('errors' => $this->last_error()));
 				return FALSE;
@@ -870,6 +877,101 @@ class Fuel_form extends Fuel_base_library {
 	 * Sets a callback hook to be run via "pre" or "post" rendering of the page.
 	 *
 	 * @access	public
+	 * @param	mixed	A string or an array of server file paths to attach. If no values are passed, then it will automatically look in the $_FILES array
+	 * @param	array	An array of configuration parameters to pass to the CI File Upload class.
+	 * @return	void
+	 */
+	public function upload_files($files = array(), $params = array())
+	{
+		if (empty($files))
+		{
+			if (!empty($_FILES))
+			{
+				foreach($_FILES as $key => $file)
+				{
+					if ($file['error'] == 0)
+					{
+						$files[$key] = $file['tmp_name'];
+					}	
+				}
+			}
+		}
+
+		if (empty($files))
+		{
+			return array();
+		}
+
+		// use upload class to help a bit with security and consistency
+		if (!is_array($files))
+		{
+			$file_name = pathinfo($files, PATHINFO_FILENAME);
+			$files = array($file_name => $files);
+		}
+
+		// if parameters is empty, we grab from the config
+		if (empty($params))
+		{
+			$params = $this->get_attach_file_params();
+		}
+
+		$this->CI->load->library('upload');
+		$fields = $this->fields;
+		foreach($files as $key => $path)
+		{
+			if (isset($fields[$key]))
+			{
+				if ( ! empty($params))
+				{
+					$this->CI->upload->initialize($params);	
+				}
+
+				if ( ! $this->CI->upload->do_upload($key))
+				{
+					$error = array('error' => $this->CI->upload->display_errors());
+					$this->_add_error($error);
+				}
+				else
+				{
+					$this->upload_data[$key] = $this->CI->upload->data();
+				}		
+			}
+		}
+		return $this->upload_data;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Cleans up attached uploaded files.
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	protected function cleanup_upload_files()
+	{
+		if ($this->get_cleanup_attached() === TRUE)
+		{
+			foreach($this->attachments as $attachment)
+			{
+				@unlink($attachment);
+			}
+
+			foreach($this->upload_data as $upload_data)
+			{
+				@unlink($upload_data['full_path']);
+			}
+		}
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Sets a callback hook to be run via "pre" or "post" rendering of the page.
+	 *
+	 * @access	public
 	 * @param	key		The type of hook (e.g. "pre_render" or "post_render")
 	 * @param	array	An array of hook information including the class/callback function. <a href="http://ellislab.com/codeigniter/user-guide/general/hooks.html" target="blank">More here</a>
 	 * @return	void
@@ -950,6 +1052,9 @@ class Fuel_form extends Fuel_base_library {
 
 		if ($this->has_email_recipients() OR $this->fuel->forms->config('test_email'))
 		{
+
+			$this->call_hook('pre_notify');
+
 			$this->CI->load->library('email');
 			$email =& $this->CI->email;
 			$forms =& $this->CI->fuel->forms;
@@ -957,7 +1062,7 @@ class Fuel_form extends Fuel_base_library {
 			// send email
 			$email->from($this->fuel->forms->config('email_from'));
 
-			// Set the email subject
+			// set the email subject
 			$email->subject($this->get_email_subject());
 
 			// check config if we are in dev mode
@@ -974,9 +1079,24 @@ class Fuel_form extends Fuel_base_library {
 				$email->bcc($this->email_bcc);
 			}
 
-			// Build the email content
+			// build the email content
 			$email->message($msg);
 
+			// attach any files
+			if ($this->get_attach_files() === TRUE)
+			{
+				foreach($this->attachments as $attachment)
+				{
+					// add this so that it can be auto-removed
+					$email->attach($attachment);
+				}
+
+				foreach($this->upload_files() as $upload_data)
+				{
+					$email->attach($upload_data['full_path']);
+				}
+			}
+	
 			// let her rip
 			if (!$email->send())
 			{
@@ -988,6 +1108,10 @@ class Fuel_form extends Fuel_base_library {
 				$this->_add_error(lang('forms_error_sending_email'));
 				return FALSE;
 			}
+
+			// cleaup any uploaded files
+			$this->cleanup_upload_files();
+			
 		}
 		return TRUE;
 	}
@@ -1012,9 +1136,7 @@ class Fuel_form extends Fuel_base_library {
 		// include js files
 		if ($this->is_javascript_submit() OR $this->is_javascript_validate())
 		{
-			$output .= "\n".js('jquery.validate.min', FORMS_FOLDER);
-			$output .= "\n".js('additional-methods.min', FORMS_FOLDER);
-			$output .= "\n".js('forms', FORMS_FOLDER);
+			$output .= "\n".js('jquery.validate.min, additional-methods.min, jquery.forms, forms', FORMS_FOLDER);
 			$config_js = $this->fuel->forms->config('js');
 		}
 		if (!empty($config_js))
@@ -1175,7 +1297,8 @@ class Fuel_form extends Fuel_base_library {
 				{
 					continue;
 				}
-				if (is_array($val)) {
+				if (is_array($val))
+				{
 					$val = implode(', ', $val);
 				}
 				$return[$key] = strip_tags($val);
@@ -1341,8 +1464,16 @@ class Fuel_form extends Fuel_base_library {
 		{
 			if (!empty($this->email_message))
 			{
+				$msg = $this->email_message;
+
+				// if it's callable, then we execute it
+				if (is_callable($this->email_message))
+				{
+					$msg = call_user_func($this->email_message, $this, $posted);
+				}
+
 				// used to escape the placeholder issues with for example the "name" property
-				$msg = str_replace(array('{{', '}}'), array('{', '}'), $this->email_message);
+				$msg = str_replace(array('{{', '}}'), array('{', '}'), $msg);
 				$output = parse_template_syntax($msg, $posted, TRUE);
 			}
 			else
@@ -1351,9 +1482,10 @@ class Fuel_form extends Fuel_base_library {
 				{
 					$output .= humanize($key).": $val\n";
 				}
+				$output = lang('forms_email_message', $this->name, $output);
 			}
 		}
-		return lang('forms_email_message', $this->name, $output);
+		return $output;
 	}
 
 	// --------------------------------------------------------------------
@@ -1418,6 +1550,79 @@ class Fuel_form extends Fuel_base_library {
 			return lang('forms_after_submit');
 		}
 		return $this->after_submit_text;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Returns a boolean TRUE/FALSE value based on whether the form should attach files automatically to the generated sent email.
+	 *
+	 * @access	protected
+	 * @return	string
+	 */	
+	protected function get_attach_files()
+	{
+		if (!isset($this->attach_files))
+		{
+			return $this->fuel->forms->config('attach_files');
+		}
+		return $this->attach_files;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Returns an array of parameters used for the CI File Upload class when uploading and attaching files to an email.
+	 *
+	 * @access	protected
+	 * @return	string
+	 */	
+	protected function get_attach_file_params()
+	{
+		if (empty($this->attach_file_params))
+		{
+			$params = $this->fuel->forms->config('attach_file_params');
+		}
+		else
+		{
+			$params = $this->attach_file_params;
+		}
+		if ((isset($params['upload_path']) AND $params['upload_path'] == 'cache') OR empty($params['upload_path']))
+		{
+			$params['upload_path'] = APPPATH.'cache/';
+		}
+		return $params;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Returns a boolean TRUE/FALSE value based on whether to cleanup any attached files from the file system.
+	 *
+	 * @access	protected
+	 * @return	string
+	 */	
+	protected function get_cleanup_attached()
+	{
+		if (!isset($this->cleanup_attached))
+		{
+			return $this->fuel->forms->config('cleanup_attached');
+		}
+		return $this->cleanup_attached;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Adds an attachment for the recipient email
+	 *
+	 * @access	protected
+	 * @return	string
+	 */	
+	public function add_attachment($attachment)
+	{
+		$this->attachments[] = $attachment;
+		return $this;
 	}
 
 	// --------------------------------------------------------------------

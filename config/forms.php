@@ -62,10 +62,21 @@ $config['forms']['spam_fields'] = array(
 	'comment_post_field'     => 'comment',
 );
 
-// Methods to handling spam. Options are, save, disregard
+// Methods to handling spam. Options are, True or FALSE
 $config['forms']['save_spam'] = TRUE;
 
+// Will automatically attach any uploaded files to the email
+$config['forms']['attach_files'] = TRUE;
 
+// Attached file upload parameters
+$config['forms']['attach_file_params'] = array(
+	'upload_path'            => APPPATH.'cache/',
+	'allowed_types'          => 'pdf|doc|docx',
+	'max_size'               => '1000',
+);
+
+// Will remove attached files from the file system after being attached
+$config['forms']['cleanup_attached'] = TRUE;
 
 // Table configurations
 $config['tables']['forms'] = 'forms';

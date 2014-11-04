@@ -1,43 +1,47 @@
 $(function(){
 
-	//**** SUBMIT ACTION ****
-	var submitAction = function(form) {
+	var beforeSubmit = function(formData, form, options){
 		var $formMessages = $('.messages', form);
 		var $form = $(form);
-		var formData = $form.serialize();
 		$('input[type=submit]', form).prop('disabled', true);
 		var ajaxMessage = unescape($form.data('ajax_message'));
 		if (!ajaxMessage) ajaxMessage = '';
    		$formMessages.html(ajaxMessage).show();
+    }
 
-	   	$.ajax({
-			type: 'POST',
-			url: $form.attr('action'),
-			data: formData
-		}).done(function(response) {
-			$formMessages.removeClass('error');
-			$formMessages.addClass('success');
-			$formMessages.fadeIn();
+    var submitSuccess = function(response, statusText, xhr, $form){
+		var $formMessages = $('.messages', $form);
+		$formMessages.removeClass('error');
+		$formMessages.addClass('success');
+		$formMessages.fadeIn();
+		$formMessages.html(response);
+		$('input[type=submit]', $form).prop('disabled', false);
+    }
 
-			$formMessages.html(response);
+    var submitError = function(xhr, status, error, $form){
+		var $formMessages = $('.messages', form);
+		$formMessages.removeClass('success');
+		$formMessages.addClass('error');
+		if (xhr.responseText !== '') {
+			$formMessages.html(xhr.responseText);
+		} else {
+			$formMessages.text('Oops! An error occurred.');
+		}
+		$('input[type=submit]', $form).prop('disabled', false);
+    }
 
-			$checkInputs = $('[type="checkbox"], [type="radio"]', form);
-			$('input, textarea, select', form).not($checkInputs).not('[type="submit"],[type="button"],[type="reset"]').val('');
-			$checkInputs.attr('checked', false)
+	var formOptions = { 
+		beforeSubmit: beforeSubmit, 
+		success: submitSuccess, 
+		error: submitError,
+		clearForm: true
+	}; 
 
-			$('input[type=submit]', form).prop('disabled', false);
+    
 
-		}).fail(function(data) {
-			$formMessages.removeClass('success');
-			$formMessages.addClass('error');
-
-			if (data.responseText !== '') {
-				$formMessages.html(data.responseText);
-			} else {
-				$formMessages.text('Oops! An error occurred.');
-			}
-			$('input[type=submit]', form).prop('disabled', false);
-		});
+	//**** SUBMIT ACTION ****
+	var submitAction = function(form) {
+   		$(form).ajaxSubmit(formOptions);
 	}
 
 	var isTrue = function(elem, key){

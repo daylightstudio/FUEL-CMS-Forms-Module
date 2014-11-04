@@ -10,6 +10,7 @@
 	<li>Validate required and common field types like email as well as setup your own custom validation</li>
 	<li>Submit and validate forms via javascript as well as server side</li>
 	<li>Specify a return URL</li>
+	<li>Automatically will attach uploaded files to the recipient email</li>
 	<li>Hook into various parts of the processing of the email that gets sent</li>
 </ul>
 
@@ -22,10 +23,12 @@
 	The following hooks are:
 </p>
 <ul>
+	<li><strong>pre_process</strong>: executes before anything processes and the response email is compiled which means you can alter $_POST values if necessary</li>
 	<li><strong>pre_validate</strong>: excutes right before the validation of the form fields</li>
 	<li><strong>post_validate</strong>: executes after the validation of the form fields</li>
 	<li><strong>pre_save</strong>: executes right before saving (if saving is enabled for the form)</li>
 	<li><strong>post_save</strong>: executes right after saving (if saving is enabled for the form)</li>
+	<li><strong>post_process</strong>: executes after everything is processed and before the notifications are sent (if there are any)</li>
 	<li><strong>pre_notify</strong>: executes right before notifying a recipient</li>
 	<li><strong>success</strong>: executes upon successful submission</li>
 	<li><strong>error</strong>: executes on error</li>
@@ -146,6 +149,8 @@ $fields['name'] = array();
 $fields['password'] = array('type' => 'password');
 $fields['password2'] = array('type' => 'password', 'label' => 'Password verfied');
 
+$params['name'] = 'My Form';
+$params['slug'] = 'my_form';
 $params['fields'] = $fields;
 $params['validation'] = array('name', 'is_equal_to', 'Please make sure the passwords match', array('{password}', '{password2}')); // validation rules
 $params['slug'] = 'myform'; // used for form action if none is provided to submit to forms/{slug}
@@ -167,6 +172,9 @@ $params['email_bcc'] = 'wonderwoman@paradiseisland.com';
 $params['email_subject'] = 'Website Submission';
 $params['email_message'] = '{name} Just signed up!';
 $params['after_submit_text'] = 'You have successfully signed up.';
+$params['attach_files'] = TRUE; // Will automatically attach files to the email sent out
+$params['attach_file_params'] = array('upload_path' => APPPATH.'cache/', 'allowed_types' => 'pdf|doc|docx',	'max_size' => '1000'); 
+$params['cleanup_attached'] = TRUE;
 $params['return_url'] = 'http://mysite.com/signup'; // only works if javascript_submit = FALSE
 $params['js'] = 'myvalidation.js'; // extra javascript validation can be included
 
