@@ -15,6 +15,8 @@ $config['modules']['form_entries'] = array(
 	'exportable' => TRUE,
 	'rows_selectable' => FALSE,
 	'clear_cache_on_save' => FALSE,
+	'default_col' => 'date_added',
+	'default_order' => 'desc',
 	'filters' => array(
 					'form_name' => array('type' => 'select', 'label' => 'Forms', 'model' => array(FORMS_FOLDER => array('forms_model' => 'forms')), 'first_option' => lang('label_select_one')),
 					'is_spam' => array('type' => 'select', 'options' => array('no' => 'no', 'yes' => 'yes'), 'first_option' => lang('label_select_one'))
