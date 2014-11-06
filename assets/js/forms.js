@@ -6,29 +6,30 @@ $(function(){
 		$('input[type=submit]', form).prop('disabled', true);
 		var ajaxMessage = unescape($form.data('ajax_message'));
 		if (!ajaxMessage) ajaxMessage = '';
-   		$formMessages.html(ajaxMessage).show();
-    }
+		$formMessages.html(ajaxMessage).show();
+	}
 
-    var submitSuccess = function(response, statusText, xhr, $form){
+	var submitSuccess = function(response, statusText, xhr, $form){
 		var $formMessages = $('.messages', $form);
 		$formMessages.removeClass('error');
 		$formMessages.addClass('success');
 		$formMessages.fadeIn();
 		$formMessages.html(response);
 		$('input[type=submit]', $form).prop('disabled', false);
-    }
+	}
 
-    var submitError = function(xhr, status, error, $form){
-		var $formMessages = $('.messages', form);
+	var submitError = function(xhr, status, error, $form){
+		var $formMessages = $('.messages', $form);
 		$formMessages.removeClass('success');
 		$formMessages.addClass('error');
+		console.log(xhr.responseText)
 		if (xhr.responseText !== '') {
 			$formMessages.html(xhr.responseText);
 		} else {
 			$formMessages.text('Oops! An error occurred.');
 		}
 		$('input[type=submit]', $form).prop('disabled', false);
-    }
+	}
 
 	var formOptions = { 
 		beforeSubmit: beforeSubmit, 
@@ -36,8 +37,6 @@ $(function(){
 		error: submitError,
 		clearForm: true
 	}; 
-
-    
 
 	//**** SUBMIT ACTION ****
 	var submitAction = function(form) {
@@ -51,7 +50,7 @@ $(function(){
 	// create messages node to insert messages back from the server if it doesn't exist
 	$("form.form").each(function(){
 		if (!$(this).find('.messages').length){
-			$(this).find('input[type=submit]').parent().append('<div class="messages"></div>');
+			$(this).find('input[type=submit]').parent().prepend('<div class="messages"></div>');
 		}
 	});
 
