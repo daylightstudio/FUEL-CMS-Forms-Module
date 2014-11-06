@@ -238,7 +238,8 @@ class Fuel_forms extends Fuel_advanced_module {
 			foreach($forms as $key => $val)
 			{
 				$name = (!empty($val['name'])) ? $val['name'] : $key;
-				$options[$key] = $name;
+				$k = (isset($val['name'])) ? $val['name'] : $key;
+				$options[$k] = $name;
 			}
 		}
 		return $options;
