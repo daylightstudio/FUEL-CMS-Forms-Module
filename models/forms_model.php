@@ -27,7 +27,7 @@ class Forms_model extends Base_module_model {
 
 	public function __construct()
 	{
-		parent::__construct('forms'); // table name
+		parent::__construct('forms', FORMS_FOLDER); // table name
 		$CI =& get_instance();
 	}
 
