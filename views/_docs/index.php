@@ -102,7 +102,7 @@ echo $form->render();
 
 <h3>Customizing the HTML</h3>
 <p>There are several ways to generate the HTML for the form. The first option is to use "auto" which will use the <a href="http://docs.getfuelcms.com/libraries/form_builder" target="_blank">Form_builder</a> class to generate the form based on
-the fields you've specified. Fields can be specified in the CMS, or passed in under the 'fields' parameter as demonstrated in the above example. The second option is to use a block view and the third is to simply use an HTML string.
+the fields you've specified. Fields can be specified in the CMS or passed in under the 'fields' parameter as demonstrated in the above example. The second option is to use a block view and the third is to simply use an HTML string.
 In both cases, you will automatically have several variables passed to it included a <dfn>$fields</dfn> array which contains an array of all the the rendered fields, their labels, and their "key" values. It also will pass variables of <dfn>email_field</dfn> and <dfn>email_label</dfn> where "email" is the name of the field.
 You can then use the following in your block view or HTML:
 </p>
