@@ -3,7 +3,7 @@
 
 <p>The Forms module provides a flexible way to create simple to complex forms. This is what you can do with it:</p>
 <ul>
-	<li>Create forms in the CMS, as static views, or a combination of the two</li>
+	<li>Create forms in the CMS, as static views or a combination of the two</li>
 	<li>Use one of the additional <a href="<?=user_guide_url('general/forms')?>">custom field types</a> to combat SPAM including a <a href="http://www.dexmedia.com/blog/honeypot-technique/" target="_blank">honeypot</a>, a simple equation, <a href="https://www.google.com/recaptcha/intro/index.html" target="_blank">reCAPTCHA</a>, <a href="http://www.stopforumspam" target="_blank">stopforumspam</a> or <a href="http://akismet.com/" target="blank">Akismet</a></li>
 	<li>Email specified recipients upon form submission</li>
 	<li>Save entries into the database which can be exported as a CSV file</li>
