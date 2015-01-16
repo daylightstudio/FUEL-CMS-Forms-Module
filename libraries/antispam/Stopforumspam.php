@@ -215,7 +215,7 @@ class Stopforumspam extends Fuel_base_library {
 
 		if (isset($key))
 		{
-			return array_dot($key, $this->_result, $default);
+			return array_get($key, $this->_result, $default);
 		}
 		else
 		{
