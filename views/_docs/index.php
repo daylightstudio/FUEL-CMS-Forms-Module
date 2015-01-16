@@ -142,6 +142,17 @@ You can then use the following in your block view or HTML:
 </div>
 </pre>
 
+<h3>Special Hidden Fields</h3>
+<p>If you are using your own HTML code, you may need to include 2 additional hidden fields with values&mdash;return_url and form_url. There is also an "__antispam__" field that 
+automatically gets generated and can be outputted automatically. Below is an example of what you can include in your own blocks.</p>
+<pre class="brush:php">
+...
+<input type="hidden" name="return_url" id="return_url" value="<?=site_url('thanks')?>">
+<input type="hidden" name="form_url" id="form_url" value="<?=current_url()?>">
+<?=$__antispam___field?>
+<input type="submit" value="Send">
+</pre>
+
 <h3>Kitchen Sink</h3>
 <pre class="brush:php">
 
@@ -155,7 +166,7 @@ $params['fields'] = $fields;
 $params['validation'] = array('name', 'is_equal_to', 'Please make sure the passwords match', array('{password}', '{password2}')); // validation rules
 $params['slug'] = 'myform'; // used for form action if none is provided to submit to forms/{slug}
 $params['save_entries'] = FALSE; // saves to the form_entries table
-$params['form_action'] = 'http://mysite.com/signup'; // if left blank it will be submitted automatically to forms/{slug} to be processed
+$params['form_action'] = 'http:&#47;&#47;mysite.com/signup'; // if left blank it will be submitted automatically to forms/{slug} to be processed
 $params['anti_spam_method'] = array('method' => 'recaptcha', 'recaptcha_public_key' => 'xxx', 'recaptcha_private_key' => 'xxxxx', 'theme' => 'white');
 $params['submit_button_text'] = 'Submit Form';
 $params['submit_button_value'] = 'Submit'; // used to determine that the form was actually submitted
@@ -175,15 +186,23 @@ $params['after_submit_text'] = 'You have successfully signed up.';
 $params['attach_files'] = TRUE; // Will automatically attach files to the email sent out
 $params['attach_file_params'] = array('upload_path' => APPPATH.'cache/', 'allowed_types' => 'pdf|doc|docx',	'max_size' => '1000'); 
 $params['cleanup_attached'] = TRUE;
-$params['return_url'] = 'http://mysite.com/signup'; // only works if javascript_submit = FALSE
+$params['return_url'] = 'http:&#47;&#47;mysite.com/signup'; // only works if javascript_submit = FALSE
 $params['js'] = 'myvalidation.js'; // extra javascript validation can be included
+$params['form_builder'] = array(); // Initialization parameters for the Form_builder class used if a form is being auto-generated
+$params['hooks'] = array(); // An array of different callable functions associated with one of the predefined hooks "pre_validate", "post_validate", "pre_save", "post_save", "pre_notify", "success", "error" (e.g. 'pre_validate' => 'My_func')
+
 
 $form = $this->fuel->forms->create('myform', $params);
 echo $form->render();
 
 </pre>
 
-
+<h3>Use Without Database Tables</h3>
+<p>If you don't want to create your forms in the CMS and/or want to capture the entries in the CMS database, you can use configure the module to work without using the tables that are automaticaly installed by the installer. To do this, add the following to your <span class="file">fuel/application/MY_fuel_modules.php</span> file:</p>
+<pre class="brush:php">
+$config['module_overwrites']['forms']['disabled'] = TRUE;
+$config['module_overwrites']['form_entries']['disabled'] = TRUE;
+</pre>
 
 <?=generate_config_info()?>
 
