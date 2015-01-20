@@ -149,7 +149,7 @@ automatically gets generated and can be outputted automatically. Below is an exa
 ...
 <input type="hidden" name="return_url" id="return_url" value="<?=site_url('thanks')?>">
 <input type="hidden" name="form_url" id="form_url" value="<?=current_url()?>">
-<?=$__antispam___field?>
+&lt;?=$__antispam___field?&gt;
 <input type="submit" value="Send">
 </pre>
 
