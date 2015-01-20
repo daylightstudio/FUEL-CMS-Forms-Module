@@ -703,7 +703,7 @@ class Fuel_form extends Fuel_base_library {
 			// post validate hook
 			$this->call_hook('post_validate');
 
-			if ($this->fuel->pages->mode() != 'views' && $this->is_save_entries())
+			if ($this->fuel->pages->mode() != 'views' && $this->get_save_entries())
 			{
 				if (!isset($this->CI->db))
 				{
