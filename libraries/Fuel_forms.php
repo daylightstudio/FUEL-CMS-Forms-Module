@@ -417,7 +417,7 @@ class Fuel_form extends Fuel_base_library {
 				// use HTML from form
 				$output .= $this->form_html;
 			}
-			$output = parse_template_syntax($output, $vars, TRUE);
+			$output = parse_template_syntax($output, $vars);
 		}
 		else
 		{
