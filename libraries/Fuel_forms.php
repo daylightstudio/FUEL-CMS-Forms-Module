@@ -421,7 +421,6 @@ class Fuel_form extends Fuel_base_library {
 		}
 		else
 		{
-			$this->CI->form_builder->load_custom_fields($this->get_custom_fields());
 			$this->CI->form_builder->set_validator($validator);
 			$this->CI->form_builder->set_fields($form_fields);
 			if ($this->has_submit_button_text())
