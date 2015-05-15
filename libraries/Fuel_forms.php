@@ -732,6 +732,7 @@ class Fuel_form extends Fuel_base_library {
 						if (!$entry->save())
 						{
 							$this->call_hook('error', array('errors' => $entry->errors()));
+							add_errors($entry->errors());
 							return FALSE;
 						}
 						$this->call_hook('post_save'); 
@@ -744,6 +745,7 @@ class Fuel_form extends Fuel_base_library {
 			if (!$this->notify($_POST['__email_message__']))
 			{
 				$this->call_hook('error', array('errors' => $this->last_error()));
+				add_errors($this->last_error());
 				return FALSE;
 			}
 			$this->call_hook('success');
