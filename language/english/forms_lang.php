@@ -9,7 +9,7 @@ $lang['forms_after_submit'] = "Thanks. Your submission has been successfully pro
 
 $lang['forms_submit_button_default'] = 'Submit';
 
-$lang['forms_view_user_guide'] = '<br><p>Visit the <a href="http://docs.getfuelcms/modules/forms" target="_blank">Forms Module section of the FUEL CMS User Guide</a> to read more about creating forms for your website.</p>';
+$lang['forms_view_user_guide'] = '<br><p>Visit the <a href="http://docs.getfuelcms.com/modules/forms" target="_blank">Forms Module section of the FUEL CMS User Guide</a> to read more about creating forms for your website.</p>';
 $lang['forms_required'] = '<span class="required">*</span>required fields';
 
 $lang['forms_error_sending_email'] = 'There was an error sending the notification.';
