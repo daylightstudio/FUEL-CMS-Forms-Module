@@ -235,11 +235,14 @@ class Fuel_forms extends Fuel_advanced_module {
 		if (strtolower($type) == 'config' OR is_null($type))
 		{
 			$forms = $this->config('forms');
-			foreach($forms as $key => $val)
+			if (!empty($forms))
 			{
-				$name = (!empty($val['name'])) ? $val['name'] : $key;
-				$k = (isset($val['name'])) ? $val['name'] : $key;
-				$options[$k] = $name;
+				foreach($forms as $key => $val)
+				{
+					$name = (!empty($val['name'])) ? $val['name'] : $key;
+					$k = (isset($val['name'])) ? $val['name'] : $key;
+					$options[$k] = $name;
+				}
 			}
 		}
 		return $options;
@@ -732,7 +735,7 @@ class Fuel_form extends Fuel_base_library {
 						if (!$entry->save())
 						{
 							$this->call_hook('error', array('errors' => $entry->errors()));
-							add_errors($entry->errors());
+							$this->_add_error($entry->errors());
 							return FALSE;
 						}
 						$this->call_hook('post_save'); 
@@ -745,13 +748,13 @@ class Fuel_form extends Fuel_base_library {
 			if (!$this->notify($_POST['__email_message__']))
 			{
 				$this->call_hook('error', array('errors' => $this->last_error()));
-				add_errors($this->last_error());
+				$this->_add_error($entry->errors());
 				return FALSE;
 			}
 			$this->call_hook('success');
 			return TRUE;
 		}
-		return FALSE;		
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------
