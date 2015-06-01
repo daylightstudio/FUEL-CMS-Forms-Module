@@ -77,7 +77,7 @@ $CI->load->module_helper(FORMS_FOLDER, 'forms');
 echo form('myform', array('fields' => array('name' => array('required' => TRUE)));
 </pre>
 
-<p>To add the form to a page in the CMS, you will need to add the "form" function to the <dfn>$config['parser_allowed_php_functions']</dfn> configuration in the <span class="file">fuel/application/config/parser.php</span> file. Then you can use the templating syntax like so:</p>
+<p>To add the form to a page in the CMS, you will need to add the "form" function to the <dfn>$config['parser_allowed_functions']</dfn> configuration in the <span class="file">fuel/application/config/MY_fuel.php</span> file. Then you can use the templating syntax like so:</p>
 <pre class="brush:php">
 {form('myform')}
 </pre>
