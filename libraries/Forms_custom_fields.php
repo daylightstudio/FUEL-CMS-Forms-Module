@@ -297,7 +297,7 @@ class Forms_custom_fields {
 			}
 		}
 
-		if (!isset($_POST[$params['key']]))
+		if (!empty($_POST) AND !isset($_POST[$params['key']]))
 		{
 			$_POST[$params['key']] = '';
 		}
