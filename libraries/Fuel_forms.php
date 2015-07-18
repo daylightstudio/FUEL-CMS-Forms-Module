@@ -28,7 +28,7 @@ class Fuel_forms extends Fuel_advanced_module {
 	 *
 	 * The constructor can be passed an array of config values
 	 */
-	function __construct($params = array())
+	public function __construct($params = array())
 	{
 		parent::__construct();
 
@@ -51,7 +51,7 @@ class Fuel_forms extends Fuel_advanced_module {
 	 * @param	array	config preferences
 	 * @return	void
 	 */	
-	public function initialize($params)
+	public function initialize($params = array())
 	{
 		parent::initialize($params);
 		$this->set_params($this->_config);
@@ -705,6 +705,8 @@ class Fuel_form extends Fuel_base_library {
 			// post validate hook
 			$this->call_hook('post_validate');
 
+			$posted = $this->clean_posted();
+			$is_spam = $this->is_spam($posted);
 			if ($this->fuel->pages->mode() != 'views' && $this->get_save_entries())
 			{
 				if (!isset($this->CI->db))
@@ -718,7 +720,6 @@ class Fuel_form extends Fuel_base_library {
 					// pre save hook
 					$this->call_hook('pre_save');
 
-					$posted = $this->clean_posted();
 					$model =& $this->CI->fuel->forms->model('form_entries');
 					$entry = $model->create();
 					$entry->url = last_url();
@@ -727,7 +728,7 @@ class Fuel_form extends Fuel_base_library {
 					$entry->remote_ip = $_SERVER['REMOTE_ADDR'];
 
 					// set if it's SPAM
-					$entry->is_spam = ($this->is_spam($posted)) ? 'yes' : 'no';
+					$entry->is_spam = ($is_spam) ? 'yes' : 'no';
 					$entry->fill($posted);
 
 					if ($entry->is_savable())
@@ -744,12 +745,14 @@ class Fuel_form extends Fuel_base_library {
 			}
 
 			$this->call_hook('post_process');
-
-			if (!$this->notify($_POST['__email_message__']))
+			if (!$is_spam OR ($is_spam AND $this->fuel->forms->config('send_spam')))
 			{
-				$this->call_hook('error', array('errors' => $this->last_error()));
-				$this->_add_error($entry->errors());
-				return FALSE;
+				if (!$this->notify($_POST['__email_message__']))
+				{
+					$this->call_hook('error', array('errors' => $this->last_error()));
+					$this->_add_error($entry->errors());
+					return FALSE;
+				}
 			}
 			$this->call_hook('success');
 			return TRUE;

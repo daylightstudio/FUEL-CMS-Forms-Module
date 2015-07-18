@@ -62,8 +62,11 @@ $config['forms']['spam_fields'] = array(
 	'comment_post_field'     => 'comment',
 );
 
-// Methods to handling spam. Options are, True or FALSE
+// Save Spam to form_entries table?
 $config['forms']['save_spam'] = TRUE;
+
+// Send messages flagged as Spam to the form recipients?
+$config['forms']['send_spam'] = FALSE;
 
 // Will automatically attach any uploaded files to the email
 $config['forms']['attach_files'] = TRUE;
