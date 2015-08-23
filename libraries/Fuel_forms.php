@@ -645,7 +645,7 @@ class Fuel_form extends Fuel_base_library {
 	 $_POST['password2'] = 'xxx';
 
 	 $validation = array('name', 'is_equal_to', 'Please make sure the passwords match', array('{password}', '{password2'));
- 	 $fields['password'] = array('type' => 'password', 'validation' => array($validation_rule));
+ 	 $fields['password'] = array('type' => 'password', 'validation' => array($validation));
 	 $fields['password2'] = array('type' => 'password', 'label' => 'Password verfied');
 
 	 $form = $this->fuel->forms->create('myform', array('fields' => array('name' => array('required' => TRUE))));
