@@ -75,7 +75,8 @@ class Forms_model extends Base_module_model {
 		$fields['block_view']['comment'] = 'The view file used to render the form. If no value is provided, then the form will be automatically generated. More information on the templating syntax and variables that get passed to the HTML and view file can be found in the documentation.';
 		$fields['block_view']['after_html'] = ' in the '.$module_view.' module';
 		$fields['block_view']['order'] = 103;
-		$fields['form_html'] = array('type' => 'textarea', 'order' => 104, 'label' => 'Form HTML', 'comment' => 'Insert HTML code for your form. More information on the templating syntax and variables that get passed to the HTML and view file can be found in the documentation.');
+		$fields['block_view']['class'] = 'toggle toggle_block';
+		$fields['form_html'] = array('type' => 'textarea', 'class' => 'toggle toggle_html', 'order' => 104, 'label' => 'Form HTML', 'comment' => 'Insert HTML code for your form. More information on the templating syntax and variables that get passed to the HTML and view file can be found in the documentation.');
 		$fields['anti_spam_method'] = array('type' => 'block', 'block_name' => 'antispam', 'order' => 105, 'display_label' => FALSE, 'label' => 'Anti SPAM method', 'module' => FORMS_FOLDER);
 		$fields['submit_button_text']['order'] = 106;
 		$fields['reset_button_text']['order'] = 107;
