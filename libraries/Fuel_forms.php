@@ -350,7 +350,7 @@ class Fuel_form extends Fuel_base_library {
 	 * @param	array	config preferences
 	 * @return	void
 	 */	
-	public function initialize($params)
+	public function initialize($params = array())
 	{
 		parent::initialize($params);
 		$this->CI->load->library('validator');

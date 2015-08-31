@@ -34,9 +34,9 @@ class Form_entries_model extends Base_module_model {
 	public function list_items($limit = NULL, $offset = NULL, $col = 'date_added', $order = 'desc', $just_count = FALSE)
 	{
 		$this->db->select($this->_tables['form_entries'].'.id, '.$this->_tables['form_entries'].'.form_name, '.$this->_tables['form_entries'].'.post, '.$this->_tables['form_entries'].'.is_spam, '.$this->_tables['form_entries'].'.remote_ip, '.$this->_tables['form_entries'].'.date_added');
-		$data = parent::list_items($limit, $offset, $col, $order, $just_count = FALSE);
+		$data = parent::list_items($limit, $offset, $col, $order, $just_count);
 
-		if (!$this->is_export)
+		if (!$just_count && !$this->is_export)
 		{
 			foreach($data as $key => $val)
 			{
@@ -155,9 +155,9 @@ class Form_entries_model extends Base_module_model {
 		exit();
 	}
 
-	public function _common_query()
+	public function _common_query($display_unpublished_if_logged_in = NULL)
 	{
-		parent::_common_query();
+		parent::_common_query($display_unpublished_if_logged_in );
 
 		$this->db->select($this->_tables['form_entries'].'.*, '.$this->_tables['forms'].'.name as form');
 		$this->db->join($this->_tables['forms'], $this->_tables['forms'].'.name = '.$this->_tables['form_entries'].'.form_name', 'LEFT');

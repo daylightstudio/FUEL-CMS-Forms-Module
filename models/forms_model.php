@@ -48,7 +48,7 @@ class Forms_model extends Base_module_model {
 	public function list_items($limit = NULL, $offset = NULL, $col = 'name', $order = 'desc', $just_count = FALSE)
 	{
 		$this->db->select('id, name, slug, published');
-		$data = parent::list_items($limit, $offset, $col, $order, $just_count = FALSE);
+		$data = parent::list_items($limit, $offset, $col, $order, $just_count);
 		return $data;
 	}
 
@@ -165,9 +165,9 @@ class Forms_model extends Base_module_model {
 		return $values;
 	}
 
-	public function _common_query()
+	public function _common_query($display_unpublished_if_logged_in = NULL)
 	{
-		parent::_common_query();
+		parent::_common_query($display_unpublished_if_logged_in);
 	}
 
 }
