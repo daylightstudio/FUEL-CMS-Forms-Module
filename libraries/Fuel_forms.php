@@ -1326,12 +1326,12 @@ class Fuel_form extends Fuel_base_library {
 	protected function run_other_validation()
 	{
 		// grab any validation that may be set in the config file
-		$config = $this->fuel->forms->config();
-		$validation = (isset($config['forms'][$this->slug]['validation'])) ? $config['forms'][$this->slug]['validation'] : array();
-		if (!empty($validation))
-		{
-			$this->add_validation($validation);
-		}
+		// $config = $this->fuel->forms->config();
+		// $validation = (isset($config['forms'][$this->slug]['validation'])) ? $config['forms'][$this->slug]['validation'] : array();
+		// if (!empty($validation))
+		// {
+		// 	$this->add_validation($validation);
+		// }
 
 		if (!empty($this->validation))
 		{
