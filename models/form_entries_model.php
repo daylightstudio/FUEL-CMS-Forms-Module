@@ -127,7 +127,7 @@ class Form_entries_model extends Base_module_model {
 			$post = json_decode($item['post'], TRUE);
 
 			// we don't know what was thrown into the post so we'll remove any values from post that may conflict
-			unset($post['id'], $post['remote_ip'], $post['date_added'], $item['post'], $item['is_spam'], $item['form_name']);
+			unset($post['id'], $post['remote_ip'], $post['date_added'], $item['post']);
 
 			// merge data from post
 			$item = array_merge($item, $post);
