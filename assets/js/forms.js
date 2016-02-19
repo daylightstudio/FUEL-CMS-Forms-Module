@@ -80,7 +80,7 @@ $(function(){
 
 	if (isTrue(this, 'validate')){
 
-		var extraValidators = {date: 'date', phone: 'phoneUs'};
+		var extraValidators = {date: 'date', phone: 'phoneUS'};
 			
 		if (typeof $.fn.rules !== 'undefined'){
 
