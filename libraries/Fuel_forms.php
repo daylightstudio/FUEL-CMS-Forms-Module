@@ -402,6 +402,9 @@ class Fuel_form extends Fuel_base_library {
 
 		$this->CI->form_builder->load_custom_fields($this->get_custom_fields());
 
+		// pre render hook
+		$this->call_hook('pre_render');
+
 		$form_fields = $this->form_fields();
 
 		// render from view or HTML
@@ -980,7 +983,7 @@ class Fuel_form extends Fuel_base_library {
 	 * Sets a callback hook to be run via "pre" or "post" rendering of the page.
 	 *
 	 * @access	public
-	 * @param	key		The type of hook (e.g. "pre_render" or "post_render")
+	 * @param	key		The type of hook (e.g. "pre_render" or "pre_process")
 	 * @param	array	An array of hook information including the class/callback function. <a href="http://ellislab.com/codeigniter/user-guide/general/hooks.html" target="blank">More here</a>
 	 * @return	void
 	 */

@@ -23,6 +23,7 @@
 	The following hooks are:
 </p>
 <ul>
+	<li><strong>pre_render</strong>: executes before displaying the rendered form</li>
 	<li><strong>pre_process</strong>: executes before anything processes and the response email is compiled which means you can alter $_POST values if necessary</li>
 	<li><strong>pre_validate</strong>: excutes right before the validation of the form fields</li>
 	<li><strong>post_validate</strong>: executes after the validation of the form fields</li>
