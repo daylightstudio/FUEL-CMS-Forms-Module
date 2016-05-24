@@ -525,6 +525,21 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
+	 * Removes a field from the form
+	 * 
+	 * @access	public
+	 * @param	string	The name of the field to remove
+	 * @return	object  Returns itself for method chaining
+	 */	
+	public function remove_field($key)
+	{
+		unset($this->fields[$key]);
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
 	 * Adds validation to a form. Note that you can pass {...} placeholders that represent $_POST values
 	 * 
 	 <code>
