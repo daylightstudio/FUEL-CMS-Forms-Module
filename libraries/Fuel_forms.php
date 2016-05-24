@@ -528,13 +528,23 @@ class Fuel_form extends Fuel_base_library {
 	 * Removes a field from the form
 	 * 
 	 * @access	public
-	 * @param	string	The name of the field to remove
+	 * @param	mixed	The name or array of field names of the field to remove
 	 * @return	object  Returns itself for method chaining
 	 */	
 	public function remove_field($key)
 	{
-		unset($this->fields[$key]);
-		return $this;
+		if (is_array($key))
+		{
+			foreach($key as $k)
+			{
+				$this->remove_field($k);
+			}
+		}
+		else
+		{
+			unset($this->fields[$key]);
+			return $this;
+		}
 	}
 
 	// --------------------------------------------------------------------
