@@ -1120,7 +1120,7 @@ class Fuel_form extends Fuel_base_library {
 			$email->message($msg);
 
 			// set the mail type
-			$email->set_mail_type($this->mail_type);
+			$email->set_mailtype($this->mail_type);
 
 			// attach any files
 			if ($this->get_attach_files() === TRUE)
