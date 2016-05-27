@@ -308,6 +308,7 @@ class Fuel_form extends Fuel_base_library {
 	protected $email_bcc = ''; // The BCC recipients to recieve the email after form submission
 	protected $email_subject = ''; // The subject line of the email being sent
 	protected $email_message = ''; // The email message to send
+	protected $mail_type = 'text'; // Sets the mail type to be either "text" or "html"
 	protected $after_submit_text = ''; // The text/HTML to display after the submission process
 	protected $attach_files = TRUE; // Will automatically attach files to the email sent out
 	protected $attach_file_params = array('upload_path' => 'cache', 'allowed_types' => 'pdf|doc|docx',	'max_size' => '1000'); // An array of parameters used for the CI File Upload class when uploading and attaching files to an email.
@@ -1117,6 +1118,9 @@ class Fuel_form extends Fuel_base_library {
 
 			// build the email content
 			$email->message($msg);
+
+			// set the mail type
+			$email->set_mail_type($this->mail_type);
 
 			// attach any files
 			if ($this->get_attach_files() === TRUE)

@@ -183,6 +183,7 @@ $params['email_cc'] = 'batman@gotham.com';
 $params['email_bcc'] = 'wonderwoman@paradiseisland.com';
 $params['email_subject'] = 'Website Submission';
 $params['email_message'] = '{name} Just signed up!';
+$params['mail_type'] = 'text';
 $params['after_submit_text'] = 'You have successfully signed up.';
 $params['attach_files'] = TRUE; // Will automatically attach files to the email sent out
 $params['attach_file_params'] = array('upload_path' => APPPATH.'cache/', 'allowed_types' => 'pdf|doc|docx',	'max_size' => '1000'); 
