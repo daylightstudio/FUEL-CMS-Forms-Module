@@ -406,7 +406,9 @@ class Fuel_form extends Fuel_base_library {
 		// pre render hook
 		$this->call_hook('pre_render');
 
-		$form_fields = $this->form_fields();
+		$posted = (empty($_POST) AND $this->CI->session->flashdata('posted')) ? (array) $this->CI->session->flashdata('posted') : $this->CI->input->post(NULL, TRUE);
+
+		$form_fields = $this->form_fields($posted);
 
 		// render from view or HTML
 		if (strtolower($this->form_display) != 'auto' AND ($this->has_block_view() OR $this->has_form_html()))
@@ -438,7 +440,6 @@ class Fuel_form extends Fuel_base_library {
 			{
 				$this->CI->form_builder->reset_value = $this->get_reset_button_text();
 			}
-			$posted = ($this->CI->session->flashdata('posted')) ? (array) $this->CI->session->flashdata('posted') : $_POST;
 			$this->CI->form_builder->set_field_values($posted);
 
 			$ajax_submit = ($this->is_javascript_submit()) ? ' data-ajax="true"' : '';
@@ -848,8 +849,9 @@ class Fuel_form extends Fuel_base_library {
 		$this->CI->load->module_helper(FORMS_FOLDER, 'forms');
 
 		// run post processing to validate custom fields
+		$posted = (empty($_POST) AND $this->CI->session->flashdata('posted')) ? (array) $this->CI->session->flashdata('posted') : $this->CI->input->post(NULL, TRUE);
 		$this->CI->form_builder->load_custom_fields($this->get_custom_fields());
-		$this->CI->form_builder->set_fields($this->form_fields());
+		$this->CI->form_builder->set_fields($this->form_fields($posted));
 		$this->CI->form_builder->set_field_values($_POST);
 		$this->CI->form_builder->post_process_field_values();
 
@@ -1237,7 +1239,7 @@ class Fuel_form extends Fuel_base_library {
 	 * @access	public
 	 * @return	array  Returns an array of form fields
 	 */	
-	public function form_fields()
+	public function form_fields($values = array())
 	{
 		// setup fields for the form
 		$form_fields = array();
@@ -1257,6 +1259,18 @@ class Fuel_form extends Fuel_base_library {
 		}
 		$form_fields['return_url'] = array('type' => 'hidden', 'value' => $this->get_return_url());
 		$form_fields['form_url'] = array('type' => 'hidden', 'value' => current_url());
+
+		// set values if any are passed
+		if (is_array($values))
+		{
+			foreach($values as $key => $val)
+			{
+				if (isset($form_fields[$key]))
+				{
+					$form_fields[$key]['value'] = $val;
+				}
+			}
+		}
 
 		return $form_fields;
 	}
