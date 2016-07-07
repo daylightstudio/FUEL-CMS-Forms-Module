@@ -307,6 +307,7 @@ class Fuel_form extends Fuel_base_library {
 	protected $email_cc = ''; // The CC recipients to recieve the email after form submission
 	protected $email_bcc = ''; // The BCC recipients to recieve the email after form submission
 	protected $email_subject = ''; // The subject line of the email being sent
+	protected $email_from = ''; // The email from address <name>
 	protected $email_message = ''; // The email message to send
 	protected $mail_type = 'text'; // Sets the mail type to be either "text" or "html"
 	protected $after_submit_text = ''; // The text/HTML to display after the submission process
@@ -1099,7 +1100,7 @@ class Fuel_form extends Fuel_base_library {
 			$forms =& $this->CI->fuel->forms;
 
 			// send email
-			$email->from($this->fuel->forms->config('email_from'));
+			$email->from($this->get_email_from(), $this->get_email_from_name());
 
 			// set the email subject
 			$email->subject($this->get_email_subject());
@@ -1138,7 +1139,7 @@ class Fuel_form extends Fuel_base_library {
 					$email->attach($upload_data['full_path']);
 				}
 			}
-	
+
 			// let her rip
 			if (!$email->send())
 			{
@@ -1466,17 +1467,56 @@ class Fuel_form extends Fuel_base_library {
 	
 	/**
 	 * Returns the the email's from value and will pull from the form's config file if no value is set.
+	 * The config value is "email_from" and can be an array with first parameter being the email address 
+	 * and second being the name or a string value in the format of (e.g. My Website <noreply@mywebsite.com>).
 	 *
 	 * @access	protected
 	 * @return	string
 	 */	
 	protected function get_email_from()
 	{
-		if (empty($this->email_from))
+		$email_from = (empty($this->email_from)) ? $this->fuel->forms->config('email_from') : $this->email_from;
+
+		if (is_array($email_from) AND isset($email_from[0]))
 		{
-			return $this->fuel->forms->config('email_from');
+			$email_from = $email_from[0];
 		}
-		return $this->email_from;
+		elseif (is_string($email_from))
+		{
+			if (preg_match( '#.+(\<(.*)\>)?$#U', $email_from, $matches) AND isset($matches[2]))
+			{
+				$email_from = $matches[2];
+			}
+		}
+		return trim($email_from);
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Returns the the email's from name value and will pull from the form's config file if no value is set.
+	 * The config value is "email_from" and can be an array with first parameter being the email address 
+	 * and second being the name or a string value in the format of (e.g. My Website <noreply@mywebsite.com>).
+	 * 
+	 * @access	protected
+	 * @return	string
+	 */	
+	protected function get_email_from_name()
+	{
+		$email_from = (empty($this->email_from)) ? $this->fuel->forms->config('email_from') : $this->email_from;
+
+		if (is_array($email_from) AND isset($email_from[1]))
+		{
+			$email_from = $email_from[1];
+		}
+		elseif (is_string($email_from))
+		{
+			if (preg_match( '#(.+)\<.*\>$#U', $email_from, $matches))
+			{
+				$email_from = $matches[1];
+			}
+		}
+		return trim($email_from);
 	}
 
 	// --------------------------------------------------------------------
