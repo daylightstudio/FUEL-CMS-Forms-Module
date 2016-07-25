@@ -1093,9 +1093,9 @@ class Fuel_form extends Fuel_base_library {
 		if ($this->has_email_recipients() OR $this->fuel->forms->config('test_email'))
 		{
 
-			$this->call_hook('pre_notify');
-
 			$this->CI->load->library('email');
+			$this->call_hook('pre_notify', array('email' => $this->CI->email));
+			
 			$email =& $this->CI->email;
 			$forms =& $this->CI->fuel->forms;
 
