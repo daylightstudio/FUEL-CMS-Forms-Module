@@ -54,7 +54,32 @@ class Form_entries_model extends Base_module_model {
 		$fields = parent::form_fields($values, $related);
 		$fields['form_name']['options'] = $CI->fuel->forms->options_list();
 		$fields['post']['type'] = 'keyval';
+
+		$fields['form_name']['displayonly'] = TRUE;
+		$fields['url']['displayonly'] = TRUE;
+		$fields['remote_ip']['displayonly'] = TRUE;
+		$fields['post'] = array('type' => 'custom', 'func' => array($this, 'format_post'));
 		return $fields;
+	}
+
+	public function format_post($params)
+	{
+		$posted = '';
+		if (!empty($params['value']))
+		{
+			$values = $params['value'];
+
+			if (is_string($values))
+			{
+				$values= json_decode($values, TRUE);
+			}
+
+			foreach($values as $key => $val)
+			{
+				$posted .= humanize($key).': '.$val.'<br>';
+			}
+		}
+		return $posted;
 	}
 	
 	public function on_before_save($values)
@@ -122,6 +147,7 @@ class Form_entries_model extends Base_module_model {
 
 		// now loop through the data and place the data based on all the ehadings
 		$i = count($data);
+
     	foreach($items as $item)
 		{
 			$post = json_decode($item['post'], TRUE);

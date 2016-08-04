@@ -1,17 +1,15 @@
 <?php 
 
 $config['modules']['forms'] = array(
-	'preview_path' => '', // put in the preview path on the site e.g products/{slug}
-	'model_location' => 'forms', // put in the advanced module name here
+	'preview_path' => '',
+	'model_location' => 'forms',
 	'sanitize_input' => array('template','php'),
 );
 
 $config['modules']['form_entries'] = array(
-	'preview_path' => '', // put in the preview path on the site e.g products/{slug}
-	'model_location' => 'forms', // put in the advanced module name here
-	'displayonly' => TRUE,
-	'item_actions' => array(),
-	'table_actions' => array(),
+	'preview_path' => '',
+	'model_location' => 'forms',
+	'item_actions' => array('save', 'view', 'delete'),
 	'exportable' => TRUE,
 	'rows_selectable' => FALSE,
 	'clear_cache_on_save' => FALSE,
