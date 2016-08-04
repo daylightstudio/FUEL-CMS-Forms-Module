@@ -11,7 +11,6 @@ $config['modules']['form_entries'] = array(
 	'model_location' => 'forms',
 	'item_actions' => array('save', 'view', 'delete'),
 	'exportable' => TRUE,
-	'rows_selectable' => FALSE,
 	'clear_cache_on_save' => FALSE,
 	'default_col' => 'date_added',
 	'default_order' => 'desc',
