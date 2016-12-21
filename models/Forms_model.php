@@ -123,9 +123,10 @@ class Forms_model extends Base_module_model {
 		$fields['email_recipients']['order'] = 403;
 		$fields['email_cc'] = array('label' => 'CC recipients', 'order' => 404);
 		$fields['email_bcc'] = array('label' => 'BCC recipients', 'order' => 405);
-		$fields['email_subject']['order'] = 406;
-		$fields['email_message'] = array('type' => 'textarea', 'order' => 407, 'class' => 'no_editor', 'style' => 50);
-		$fields['return_url'] = array('label' => 'Return URL', 'order' => 408);
+		$fields['email_reply_to'] = array('label' => 'Reply to', 'order' => 406);
+		$fields['email_subject']['order'] = 407;
+		$fields['email_message'] = array('type' => 'textarea', 'order' => 408, 'class' => 'no_editor', 'style' => 50);
+		$fields['return_url'] = array('label' => 'Return URL', 'order' => 409);
 		
 
 		// remove unused

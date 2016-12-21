@@ -31,6 +31,7 @@
 	<li><strong>post_save</strong>: executes right after saving (if saving is enabled for the form)</li>
 	<li><strong>post_process</strong>: executes after everything is processed and before the notifications are sent (if there are any)</li>
 	<li><strong>pre_notify</strong>: executes right before notifying a recipient</li>
+	<li><strong>notify</strong>: will replace the default email notification with your own custom callback</li>
 	<li><strong>success</strong>: executes upon successful submission</li>
 	<li><strong>error</strong>: executes on error</li>
 </ul>
@@ -181,6 +182,7 @@ $params['javascript_waiting_message'] = 'Submitting Information...';
 $params['email_recipients'] = 'superman@krypton.com';
 $params['email_cc'] = 'batman@gotham.com';
 $params['email_bcc'] = 'wonderwoman@paradiseisland.com';
+$params['email_reply_to'] = 'noreply@paradiseisland.com';
 $params['email_subject'] = 'Website Submission';
 $params['email_message'] = '{name} Just signed up!';
 $params['mail_type'] = 'text';

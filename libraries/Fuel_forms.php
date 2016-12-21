@@ -1092,69 +1092,75 @@ class Fuel_form extends Fuel_base_library {
 
 		if ($this->has_email_recipients() OR $this->fuel->forms->config('test_email'))
 		{
-
 			$this->CI->load->library('email');
+
 			$this->call_hook('pre_notify', array('email' => $this->CI->email));
-			
-			$email =& $this->CI->email;
-			$forms =& $this->CI->fuel->forms;
 
-			// send email
-			$email->from($this->get_email_from(), $this->get_email_from_name());
-
-			// set the email subject
-			$email->subject($this->get_email_subject());
-
-			// check config if we are in dev mode
-			if (is_dev_mode())
+			if (!empty($this->hooks['notify']))
 			{
-				$email->to($this->fuel->forms->config('test_email'));
-				$email->cc($this->email_cc);
-				$email->bcc($this->email_bcc);
+				$this->call_hook('notify', array('email' => $this->CI->email));	
 			}
 			else
 			{
-				$email->to($this->email_recipients);
-				$email->cc($this->email_cc);
-				$email->bcc($this->email_bcc);
-			}
+				$email =& $this->CI->email;
+				$forms =& $this->CI->fuel->forms;
 
-			// build the email content
-			$email->message($msg);
+				// send email
+				$email->from($this->get_email_from(), $this->get_email_from_name());
 
-			// set the mail type
-			$email->set_mailtype($this->mail_type);
+				// set the email subject
+				$email->subject($this->get_email_subject());
 
-			// attach any files
-			if ($this->get_attach_files() === TRUE)
-			{
-				foreach($this->attachments as $attachment)
-				{
-					// add this so that it can be auto-removed
-					$email->attach($attachment);
-				}
-
-				foreach($this->upload_files() as $upload_data)
-				{
-					$email->attach($upload_data['full_path']);
-				}
-			}
-
-			// let her rip
-			if (!$email->send())
-			{
+				// check config if we are in dev mode
 				if (is_dev_mode())
 				{
-					echo $email->print_debugger();
-					exit();
+					$email->to($this->fuel->forms->config('test_email'));
+					$email->cc($this->email_cc);
+					$email->bcc($this->email_bcc);
 				}
-				$this->_add_error(lang('forms_error_sending_email'));
-				return FALSE;
-			}
+				else
+				{
+					$email->to($this->email_recipients);
+					$email->cc($this->email_cc);
+					$email->bcc($this->email_bcc);
+				}
 
-			// cleaup any uploaded files
-			$this->cleanup_upload_files();
-			
+				// build the email content
+				$email->message($msg);
+
+				// set the mail type
+				$email->set_mailtype($this->mail_type);
+
+				// attach any files
+				if ($this->get_attach_files() === TRUE)
+				{
+					foreach($this->attachments as $attachment)
+					{
+						// add this so that it can be auto-removed
+						$email->attach($attachment);
+					}
+
+					foreach($this->upload_files() as $upload_data)
+					{
+						$email->attach($upload_data['full_path']);
+					}
+				}
+
+				// let her rip
+				if (!$email->send())
+				{
+					if (is_dev_mode())
+					{
+						echo $email->print_debugger();
+						exit();
+					}
+					$this->_add_error(lang('forms_error_sending_email'));
+					return FALSE;
+				}
+
+				// cleaup any uploaded files
+				$this->cleanup_upload_files();
+			}
 		}
 		return TRUE;
 	}

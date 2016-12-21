@@ -178,10 +178,11 @@ class Forms_custom_fields {
 
 		if (!empty($_POST))
 		{
+			$check_spam = (!empty($_SESSION['check_spam'])) ? $_SESSION['check_spam'] : NULL;
 			$func_str = '$CI =& get_instance();
 				$validator =& $CI->form_builder->get_validator();
 				$validator->add_rule("antispam", "required", "'.$params['error_message'].'", array("'.$this->CI->input->post('antispam').'"));
-				$validator->add_rule("antispam", "is_equal_to", "'.$params['error_message'].'", array("'.$this->CI->input->post('antispam').'", "'.$_SESSION['check_spam'].'"));
+				$validator->add_rule("antispam", "is_equal_to", "'.$params['error_message'].'", array("'.$this->CI->input->post('antispam').'", "'.$check_spam.'"));
 				';
 			$func = create_function('$value', $func_str);
 			$form_builder->set_post_process($params['key'], $func);
