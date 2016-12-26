@@ -272,7 +272,7 @@ class Fuel_forms extends Fuel_advanced_module {
 			return call_user_func_array(array($form, $method), $args);
 		
 		}
-		throw new Exception('Invalid method call '.$$method);
+		throw new Exception('Invalid method call '.$method);
 	}
 }
 
