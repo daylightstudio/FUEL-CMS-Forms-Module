@@ -384,7 +384,7 @@ class Fuel_form extends Fuel_base_library {
 	{
 		$this->initialize($params);
 		
-		$this->CI->load->library('session');
+		@$this->CI->load->library('session');
 
 		// process request
 		if (!empty($_POST[$this->submit_button_value]))
@@ -1216,9 +1216,16 @@ class Fuel_form extends Fuel_base_library {
 	{
 		$rendered_fields = array();
 		$vars = array();
-		
+
+		$posted = ($this->CI->session->flashdata('posted')) ? (array) $this->CI->session->flashdata('posted') : $_POST;
+
 		foreach($form_fields as $key => $form_field)
 		{
+			if (isset($posted[$key]))
+			{
+				$form_field['value'] = $posted[$key];
+			}
+			
 			$rendered_fields[$key]['field'] = $this->CI->form_builder->create_field($form_field);
 			$rendered_fields[$key]['label'] = $this->CI->form_builder->create_label($form_field);
 			$rendered_fields[$key]['key'] = $key;
