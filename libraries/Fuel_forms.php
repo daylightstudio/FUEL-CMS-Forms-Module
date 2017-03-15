@@ -454,10 +454,10 @@ class Fuel_form extends Fuel_base_library {
 		}
 		
 
-		if ($this->CI->session->flashdata('success'))
-		{
-			$output = $this->get_after_submit_text();
-		}
+		// if ($this->CI->session->flashdata('success'))
+		// {
+		// 	$output = $this->get_after_submit_text();
+		// }
 
 		$output = $output;
 
@@ -495,7 +495,7 @@ class Fuel_form extends Fuel_base_library {
 					}
 
 					//$this->fields[$key] = $this->fuel->forms->create($key, $value);
-					$this->fields[$key] = new Form_field($value);
+					$this->fields[$key] = new Form_field($key, $value);
 				}
 				elseif ($value instanceof Form_field)
 				{
@@ -514,7 +514,7 @@ class Fuel_form extends Fuel_base_library {
 				}
 
 				//$this->fields[$name] = $this->fuel->forms->create($name, $params);
-				$this->fields[$name] = new Form_field($params);
+				$this->fields[$name] = new Form_field($name, $params);
 
 			}
 			elseif ($params instanceof Form_field)
@@ -1261,7 +1261,7 @@ class Fuel_form extends Fuel_base_library {
 		$is_block_view = $this->is_block_view();
 		foreach($this->fields as $f)
 		{
-			$form_fields[$f->name] = $f->render($is_block_view);
+			$form_fields[$f->key] = $f->render($is_block_view);
 		}
 
 		// antispam
@@ -1852,9 +1852,10 @@ class Form_field extends Fuel_base_library {
 	/**
 	 * Constructor - Sets parameters
 	 */
-	function __construct($params = array())
+	function __construct($key, $params = array())
 	{
 		parent::__construct();
+		$params['key'] = $key;
 		$this->initialize($params);
 	}
 	

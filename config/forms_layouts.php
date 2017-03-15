@@ -162,5 +162,21 @@ $config['blocks']['phone'] = array(
 	'model'    => array('forms' => 'forms_model'),
 );
 
+$config['blocks']['radio'] = array(
+	'group'    => 'Forms',
+	'class'    => 'Base_field_layout',
+	'filepath' => 'libraries/layouts',
+	'module'   => 'forms',
+	'model'    => array('forms' => 'forms_model'),
+);
+
+$config['blocks']['radio'] = array(
+	'group'    => 'Forms',
+	'class'    => 'Base_field_layout',
+	'filepath' => 'libraries/layouts',
+	'module'   => 'forms',
+	'model'    => array('forms' => 'forms_model'),
+);
+
 /* End of file MY_fuellayouts.php */
 /* Location: ./application/config/MY_fuellayouts.php */

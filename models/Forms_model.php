@@ -194,7 +194,7 @@ class Form_model extends Base_module_record {
 						$input['type'] = 'text';
 					}
 					
-					$fields[$input['name']] = new Form_field();
+					$fields[$input['name']] = new Form_field($key);
 
 					// merge in extra properties
 					if (!empty($input['field']))
