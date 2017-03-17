@@ -420,7 +420,7 @@ class Fuel_form extends Fuel_base_library {
 			{
 				// use block view file
 				$view = '_blocks/'.$this->block_view;
-				$output .= $this->CI->load->module_view($this->block_view_module, $view, $vars, TRUE);
+				$output .= $this->CI->load->module_view($this->block_view_module, $view, $vars, TRUE, $this->slug);
 			}
 			else
 			{
