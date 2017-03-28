@@ -93,6 +93,7 @@ class Forms_model extends Base_module_model {
 											'section' => array('type' => 'section', 'value' => '__title__'),
 											'name' => array('required' => TRUE, 'comment' => 'The input field name (not to be confused with the field label).'),
 											'label' => array('comment' => 'If left blank, one will be added for you based on the above name value.'),
+											'value' => array('label' => 'Default value', 'comment' => 'The default value for the field.'),
 											'field' => array('label' => 'Field type', 'type' => 'block', 'group' => 'Forms'),
 											//'attributes' => array(),
 											//'required' => array('type' => 'checkbox'),
