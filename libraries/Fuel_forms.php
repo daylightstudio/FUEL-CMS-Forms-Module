@@ -1740,7 +1740,7 @@ class Fuel_form extends Fuel_base_library {
 	 * @access	public
 	 * @param	object	method name
 	 * @param	array	arguments
-	 * @return	array
+	 * @return	mixed
 	 */	
 	public function __call($method, $args)
 	{
@@ -1758,7 +1758,7 @@ class Fuel_form extends Fuel_base_library {
 		{
 			if (property_exists($this, $found[1]))
 			{
-				$method = $this->$found[1];
+				$method = $this->{$found[1]};
 				return $this->$method;
 			}
 		}
@@ -1768,7 +1768,7 @@ class Fuel_form extends Fuel_base_library {
 			{
 				if (!empty($found[1]))
 				{
-					return is_true_val($this->$found[1]);
+					return is_true_val($this->{$found[1]});
 				}
 			}
 		}
@@ -1776,7 +1776,7 @@ class Fuel_form extends Fuel_base_library {
 		{
 			if (property_exists($this, $found[1]))
 			{
-				return !empty($this->$found[1]);
+				return !empty($this->{$found[1]});
 			}
 		}
 		return FALSE;
