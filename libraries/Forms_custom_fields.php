@@ -71,7 +71,7 @@ class Forms_custom_fields {
 
 		$str = '<script>
              var RecaptchaOptions = {
-                theme : \''.$params['theme'].'\'
+                theme : \''.$params['recaptcha_theme'].'\'
              };
         </script>
         ';
