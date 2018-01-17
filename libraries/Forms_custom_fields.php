@@ -52,7 +52,7 @@ class Forms_custom_fields {
 			$params['recaptcha_private_key'] = $this->fuel->forms->config('recaptcha_private_key');
 		}
 
-		$defaults = array('theme' => 'clean', 'error_message' => 'Please enter in a valid captcha value');
+		$defaults = array('recaptcha_theme' => 'clean', 'error_message' => 'Please enter in a valid captcha value');
 		$params = $this->set_defaults($defaults, $params);
 
 		if (isset($_POST["recaptcha_response_field"]))
@@ -71,7 +71,7 @@ class Forms_custom_fields {
 
 		$str = '<script>
              var RecaptchaOptions = {
-                theme : \''.$params['theme'].'\'
+                theme : \''.$params['recaptcha_theme'].'\'
              };
         </script>
         ';
