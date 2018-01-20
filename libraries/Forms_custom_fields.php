@@ -6,15 +6,15 @@ class Forms_custom_fields {
 
 	protected $CI;
 	protected $fuel;
-
+	
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Constructor
 	 *
 	 * @access	public
 	 * @return	void
-	 */
+	 */	
 	public function __construct()
 	{
 		$this->CI =& get_instance();
@@ -27,17 +27,17 @@ class Forms_custom_fields {
 	}
 
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Creates a reCAPTCHA to combat SPAM as well as the necessary post processing validation rules.
 	 * Additional parameters include "recaptcha_public_key", "recaptcha_private_key" and "<a href="https://developers.google.com/recaptcha/docs/customization" target="_blank">theme</a>":
 	 *
 	 * <a href="https://developers.google.com/recaptcha/" target="_blank">https://developers.google.com/recaptcha/</a>
-	 *
+	 * 
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
 	 * @return	string
-	 */
+	 */	
 	public function recaptcha($params = array())
 	{
 		$form_builder =& $params['instance'];
@@ -74,7 +74,7 @@ class Forms_custom_fields {
 
 
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Adds Akismet validation to your form as well as the necessary post processing validation rules.
 	 * akismet_api_key
@@ -85,7 +85,7 @@ class Forms_custom_fields {
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
 	 * @return	string
-	 */
+	 */	
 	public function akismet($params = array())
 	{
 		$form_builder =& $params['instance'];
@@ -113,24 +113,24 @@ class Forms_custom_fields {
 		return ' ';
 	}
 
-
+	
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Creates a honeypot to combat SPAM as well as the necessary post processing validation rules.
 	 * http://www.dexmedia.com/blog/honeypot-technique/
-	 *
+	 * 
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
 	 * @return	array
-	 */
+	 */	
 	public function honeypot($params = array())
 	{
 		$form_builder =& $params['instance'];
 
 		$defaults = array('name_field' => '', 'error_message' => 'Invalid submission.');
 		$params = $this->set_defaults($defaults, $params);
-
+		
 		if (!empty($_POST))
 		{
 			$func_str = '$CI =& get_instance();
@@ -146,15 +146,15 @@ class Forms_custom_fields {
 	}
 
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Creates an equation to combat SPAM as well as the necessary post processing validation rules.
 	 * http://www.dexmedia.com/blog/honeypot-technique/
-	 *
+	 * 
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
 	 * @return	string
-	 */
+	 */	
 	public function equation($params = array())
 	{
 		// check if session is already started and if not, start one
@@ -196,14 +196,14 @@ class Forms_custom_fields {
 	}
 
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Adds Stopforumspam validation to your form as well as the necessary post processing validation rules.
 	 *
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
 	 * @return	string
-	 */
+	 */	
 	public function stopforumspam($params = array())
 	{
 		$form_builder =& $params['instance'];
@@ -216,7 +216,7 @@ class Forms_custom_fields {
 		{
 			$params['thresholds'] = array_merge($this->fuel->forms->config('stopforumspam'), $params['thresholds']);
 		}
-
+		
 		$defaults = array('name_field' => 'name', 'email_field' => 'email', 'message_field' => '__email_message__', 'error_message' => 'Your message has been flagged as SPAM and cannot be submitted.');
 		$params = $this->set_defaults($defaults, $params);
 
@@ -244,14 +244,14 @@ class Forms_custom_fields {
 	}
 
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Creates one of the 4 SPAM fields types. You specify the "method" parameter to determine which one to use.
-	 *
+	 * 
 	 * @access	public
 	 * @param 	array  	An array of parameters to pass to the field type
 	 * @return	string
-	 */
+	 */	
 	public function antispam($params = array())
 	{
 		$form_builder =& $params['instance'];
@@ -271,15 +271,15 @@ class Forms_custom_fields {
 
 
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Creates a default set of parameters for the field type.
-	 *
+	 * 
 	 * @access	protected
 	 * @param 	array  	An array of default parameters to pass to the field type
 	 * @param 	array  	An array of parameters to pass to the field type
 	 * @return	array
-	 */
+	 */	
 	protected function set_defaults($defaults, $params = array())
 	{
 
