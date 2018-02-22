@@ -144,11 +144,13 @@ function validate_akismet($api_key, $name, $email, $msg, $log = TRUE)
  */
 function validate_recaptcha($private_key)
 {
-	$resp = recaptcha_check_answer ($private_key,
-									$_SERVER["REMOTE_ADDR"],
-									$_POST["recaptcha_challenge_field"],
-									$_POST["recaptcha_response_field"]);
-	return $resp->is_valid;
+	$CI =& get_instance();
+	$recaptcha = new \ReCaptcha\ReCaptcha($private_key);
+	$resp = $recaptcha->verify(
+		$CI->input->post('g-recaptcha-response'),
+		$_SERVER['REMOTE_ADDR']
+	);
+	return $resp->isSuccess();
 }
 
 

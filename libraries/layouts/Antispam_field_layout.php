@@ -44,7 +44,7 @@ class Antispam_field_layout extends Base_field_layout {
 		$fields['akismet_api_key'] = array('class' => 'akismet_api_key', 'label' => 'Akismet API key');
 		$fields['recaptcha_public_key'] = array('class' => 'recaptcha_public_key', 'label' => 'reCAPTCHA public key', 'size' => 60);
 		$fields['recaptcha_private_key'] = array('class' => 'recaptcha_private_key', 'label' => 'reCAPTCHA private key', 'size' => 60);
-		$fields['recaptcha_theme'] = array('type' => 'select',  'label' => 'reCAPTCHA theme', 'options' => array('clean' => 'clean', 'blackglass' => 'blackglass', 'white' => 'white', 'red' => 'red'), 'class' => 'recaptcha_theme');
+		$fields['recaptcha_theme'] = array('type' => 'select',  'label' => 'reCAPTCHA theme', 'options' => array('light' => 'light', 'dark' => 'dark'), 'class' => 'recaptcha_theme');
 		$fields = $this->process_fields($fields);
 		return $fields;
 	}

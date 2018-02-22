@@ -52,31 +52,24 @@ class Forms_custom_fields {
 			$params['recaptcha_private_key'] = $this->fuel->forms->config('recaptcha_private_key');
 		}
 
-		$defaults = array('recaptcha_theme' => 'clean', 'error_message' => 'Please enter in a valid captcha value');
+		$defaults = array('recaptcha_theme' => 'light', 'error_message' => 'Please enter in a valid captcha value');
 		$params = $this->set_defaults($defaults, $params);
 
-		if (isset($_POST["recaptcha_response_field"]))
+		if (isset($_POST["g-recaptcha-response"]))
 		{
-			$_POST[$params['key']] = $_POST["recaptcha_response_field"];
+			$_POST[$params['key']] = $_POST["g-recaptcha-response"];
 		}
 
         $params['type'] = 'none';
         $func_str = '$CI =& get_instance();
         	$validator =& $CI->form_builder->get_validator();
-        	$validator->add_rule("recaptcha_response_field", "required", "'.$params['error_message'].'", array("'.$this->CI->input->post('recaptcha_response_field').'"));
+        	$validator->add_rule("recaptcha_response_field", "required", "'.$params['error_message'].'", array("'.$this->CI->input->post('g-recaptcha-response').'"));
 			$validator->add_rule("recaptcha_response_field", "validate_recaptcha", "'.$params['error_message'].'", array("'.$params['recaptcha_private_key'].'"));
 			';
 		$func = create_function('$value', $func_str);
 		$form_builder->set_post_process($params['key'], $func);
 
-		$str = '<script>
-             var RecaptchaOptions = {
-                theme : \''.$params['recaptcha_theme'].'\'
-             };
-        </script>
-        ';
-		$str .= recaptcha_get_html($params['recaptcha_public_key']);
-		return $str;
+		return recaptcha_get_html($params['recaptcha_public_key'], $params['recaptcha_theme']);
 	}
 
 
