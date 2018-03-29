@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(FORMS_PATH.'libraries/third_party/recaptchalib.php');
+require_once(FORMS_PATH.'libraries/third_party/recaptcha/src/autoload.php');
 
 class Forms_custom_fields {
 
