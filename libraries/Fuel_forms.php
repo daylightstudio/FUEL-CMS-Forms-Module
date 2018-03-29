@@ -402,7 +402,8 @@ class Fuel_form extends Fuel_base_library {
 		// initialize output string
 		$output = $this->js_output();
 
-		$this->CI->form_builder->load_custom_fields($this->get_custom_fields());
+		$form_builder = new Form_builder();
+		$form_builder->load_custom_fields($this->get_custom_fields());
 
 		// pre render hook
 		$this->call_hook('pre_render');
@@ -431,26 +432,26 @@ class Fuel_form extends Fuel_base_library {
 		}
 		else
 		{
-			$this->CI->form_builder->set_validator($validator);
-			$this->CI->form_builder->set_fields($form_fields);
+			$form_builder->set_validator($validator);
+			$form_builder->set_fields($form_fields);
 			if ($this->has_submit_button_text())
 			{
-				$this->CI->form_builder->submit_value = $this->get_submit_button_text();
+				$form_builder->submit_value = $this->get_submit_button_text();
 			}
 			if ($this->has_reset_button_text())
 			{
-				$this->CI->form_builder->reset_value = $this->get_reset_button_text();
+				$form_builder->reset_value = $this->get_reset_button_text();
 			}
-			$this->CI->form_builder->set_field_values($posted);
+			$form_builder->set_field_values($posted);
 
 			$ajax_submit = ($this->is_javascript_submit()) ? ' data-ajax="true"' : '';
 			$js_validate = ($this->is_javascript_validate()) ? ' data-validate="true"' : '';
 			$js_waiting_message = ($this->is_javascript_validate()) ? ' data-ajax_message="'.rawurlencode($this->javascript_waiting_message).'"' : '';
-			$this->CI->form_builder->form_attrs = 'novalidate method="post" action="'.$this->get_form_action().'" enctype="multipart/form-data" class="form" id="'.$this->slug.'"'.$ajax_submit.$js_validate.$js_waiting_message;
-			$this->CI->form_builder->display_errors = TRUE;
-			$this->CI->form_builder->required_text = lang('forms_required');
-			$this->CI->form_builder->set_params($this->form_builder);
-			$output .= $this->CI->form_builder->render();
+			$form_builder->form_attrs = 'novalidate method="post" action="'.$this->get_form_action().'" enctype="multipart/form-data" class="form" id="'.$this->slug.'"'.$ajax_submit.$js_validate.$js_waiting_message;
+			$form_builder->display_errors = TRUE;
+			$form_builder->required_text = lang('forms_required');
+			$form_builder->set_params($this->form_builder);
+			$output .= $form_builder->render();
 		}
 		
 
