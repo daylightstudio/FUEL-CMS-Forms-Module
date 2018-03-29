@@ -4,6 +4,8 @@ $config['modules']['forms'] = array(
 	'preview_path' => '',
 	'model_location' => 'forms',
 	'sanitize_input' => array('template','php'),
+	'js_controller' => 'FormsController',
+	'js_controller_path' => js_path('', FORMS_FOLDER),
 );
 
 $config['modules']['form_entries'] = array(

@@ -21,5 +21,16 @@ FormsController = jqx.createController(fuel.controller.BaseFuelController, {
 			$('#form').attr('method', 'post').attr('action', url).submit();
 		})*/
 
-	}		
+	},
+
+	add_edit: function(initSpecFields){
+		var _this = this;
+		// do this first so that the fillin is in the checksaved value
+		fuel.controller.BaseFuelController.prototype.add_edit.call(this, initSpecFields);
+
+		// To trigger change of form field
+		$(document).on('cloned.fuel', function(e){
+			$(e.clonedNode).find('select').trigger('change')
+		});
+	}
 });
