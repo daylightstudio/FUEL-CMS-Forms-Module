@@ -144,6 +144,8 @@ function validate_akismet($api_key, $name, $email, $msg, $log = TRUE)
  */
 function validate_recaptcha($private_key)
 {
+	require_once(FORMS_PATH.'libraries/third_party/recaptcha/src/autoload.php');
+	
 	$CI =& get_instance();
 	$recaptcha = new \ReCaptcha\ReCaptcha($private_key);
 	$resp = $recaptcha->verify(
