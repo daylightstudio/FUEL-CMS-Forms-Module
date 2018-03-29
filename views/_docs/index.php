@@ -1,5 +1,5 @@
 <h1>Forms Module Documentation</h1>
-<p>This Forms module documentation is for version <?=FORMS_VERSION?>.</p>
+<p>This <a href="https://github.com/daylightstudio/FUEL-CMS-Forms-Module" target="_blank">Forms module documentation</a> is for version <?=FORMS_VERSION?>.</p>
 
 <p>The Forms module provides a flexible way to create simple to complex forms. This is what you can do with it:</p>
 <ul>
