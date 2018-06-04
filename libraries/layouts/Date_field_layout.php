@@ -33,7 +33,7 @@ class Date_field_layout extends Base_field_layout {
 	public function fields()
 	{
 		$fields = parent::fields();
-		$fields['format'] = array('type' => 'select', 'options' => array('m/d/Y' => 'm/d/Y', 'Y-m-d' => 'Y-m-d', 'd-mm-Y' => 'd-m-Y'));
+		$fields['date_format'] = array('type' => 'select', 'options' => array('m/d/Y' => 'm/d/Y', 'Y-m-d' => 'Y-m-d', 'd-m-Y' => 'd-m-Y'));
 		$fields['min_date'] = array('type' => 'date');
 		$fields['max_date'] = array('type' => 'date');
 		$fields = $this->process_fields($fields);
