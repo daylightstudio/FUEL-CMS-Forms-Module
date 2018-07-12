@@ -751,7 +751,7 @@ class Fuel_form extends Fuel_base_library {
 					// pre save hook
 					$this->call_hook('pre_save');
 
-					$model =& $this->CI->fuel->forms->model('form_entries');
+					$model = $this->CI->fuel->forms->model('form_entries');
 					$entry = $model->create();
 					$entry->url = last_url();
 					$entry->post = json_encode($posted);
