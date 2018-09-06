@@ -169,7 +169,7 @@ $params['validation'] = array('name', 'is_equal_to', 'Please make sure the passw
 $params['slug'] = 'myform'; // used for form action if none is provided to submit to forms/{slug}
 $params['save_entries'] = FALSE; // saves to the form_entries table
 $params['form_action'] = 'http:&#47;&#47;mysite.com/signup'; // if left blank it will be submitted automatically to forms/{slug} to be processed
-$params['anti_spam_method'] = array('method' => 'recaptcha', 'recaptcha_public_key' => 'xxx', 'recaptcha_private_key' => 'xxxxx', 'theme' => 'white');
+$params['anti_spam_method'] = array('method' => 'recaptcha', 'recaptcha_public_key' => 'xxx', 'recaptcha_private_key' => 'xxxxx', 'recaptcha_theme' => 'white');
 $params['submit_button_text'] = 'Submit Form';
 $params['submit_button_value'] = 'Submit'; // used to determine that the form was actually submitted
 $params['reset_button_text'] = 'Reset Form';
