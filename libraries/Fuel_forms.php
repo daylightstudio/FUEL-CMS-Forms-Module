@@ -1225,8 +1225,29 @@ class Fuel_form extends Fuel_base_library {
 			if (isset($posted[$key]))
 			{
 				$form_field['value'] = $posted[$key];
-			}
+				
+				if (empty($form_field['type']))
+				{
+					$is_checkbox = FALSE;
+				}
+				else
+				{
+					$is_checkbox = (($form_field['type'] == 'checkbox') OR ($form_field['type'] == 'boolean' AND $form_builder->boolean_mode == 'checkbox'));
+				}
 
+				if ($form_field['type'] == 'checkbox')
+				{
+					if ($is_checkbox)
+						{
+							$form_field['checked'] = ((isset($form_field['value']) AND $posted[$key] == $form_field['value']) OR 
+								$posted[$key] === TRUE OR  
+								$posted[$key] === 1 OR  
+								$posted[$key] === 'y' OR  
+								$posted[$key] === 'yes') ? TRUE : FALSE;
+						}
+				}
+			}
+			
 			$rendered_fields[$key]['field'] = $form_builder->create_field($form_field);
 			$rendered_fields[$key]['label'] = $form_builder->create_label($form_field);
 			$rendered_fields[$key]['key'] = $key;
