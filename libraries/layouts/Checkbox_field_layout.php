@@ -17,7 +17,7 @@ class Checkbox_field_layout extends Base_field_layout {
 	public function fields()
 	{
 		$fields = parent::fields();
-		unset($fields['required'], $fields['attributes']);
+		unset($fields['attributes']);
 		return $fields;
 	}
 }
