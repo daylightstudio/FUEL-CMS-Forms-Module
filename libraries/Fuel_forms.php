@@ -415,7 +415,7 @@ class Fuel_form extends Fuel_base_library {
 		// render from view or HTML
 		if (strtolower($this->form_display) != 'auto' AND ($this->has_block_view() OR $this->has_form_html()))
 		{
-			$vars = $this->rendered_vars($form_fields);
+			$vars = $this->rendered_vars($form_fields, $form_builder);
 
 			if ($this->form_display == 'block')
 			{
@@ -1213,7 +1213,7 @@ class Fuel_form extends Fuel_base_library {
 	 * @access	public
 	 * @return	array  Returns an array of variables that can be used in views/block files
 	 */	
-	public function rendered_vars($form_fields)
+	public function rendered_vars($form_fields, $form_builder)
 	{
 		$rendered_fields = array();
 		$vars = array();
@@ -1226,9 +1226,9 @@ class Fuel_form extends Fuel_base_library {
 			{
 				$form_field['value'] = $posted[$key];
 			}
-			
-			$rendered_fields[$key]['field'] = $this->CI->form_builder->create_field($form_field);
-			$rendered_fields[$key]['label'] = $this->CI->form_builder->create_label($form_field);
+
+			$rendered_fields[$key]['field'] = $form_builder->create_field($form_field);
+			$rendered_fields[$key]['label'] = $form_builder->create_label($form_field);
 			$rendered_fields[$key]['key'] = $key;
 			$vars[$key.'_field'] = $rendered_fields[$key]['field'];
 			$vars[$key.'_label'] = $rendered_fields[$key]['label'];
@@ -1271,6 +1271,7 @@ class Fuel_form extends Fuel_base_library {
 		{
 			$form_fields['__antispam__'] = array('type' => 'antispam', 'display_label' => FALSE);
 			$form_fields['__antispam__'] = array_merge($form_fields['__antispam__'], $antispam_params);
+
 		}
 		$form_fields['return_url'] = array('type' => 'hidden', 'value' => $this->get_return_url());
 		$form_fields['form_url'] = array('type' => 'hidden', 'value' => current_url());

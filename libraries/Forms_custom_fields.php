@@ -31,7 +31,7 @@ class Forms_custom_fields {
 	
 	/**
 	 * Creates a reCAPTCHA to combat SPAM as well as the necessary post processing validation rules.
-	 * Additional parameters include "recaptcha_public_key", "recaptcha_private_key" and "<a href="https://developers.google.com/recaptcha/docs/customization" target="_blank">theme</a>":
+	 * Additional parameters include "recaptcha_public_key", "recaptcha_private_key":
 	 *
 	 * <a href="https://developers.google.com/recaptcha/" target="_blank">https://developers.google.com/recaptcha/</a>
 	 * 
@@ -53,7 +53,7 @@ class Forms_custom_fields {
 			$params['recaptcha_private_key'] = $this->fuel->forms->config('recaptcha_private_key');
 		}
 
-		$defaults = array('recaptcha_theme' => 'light', 'error_message' => 'Please enter in a valid captcha value');
+		$defaults = array('error_message' => 'Please enter in a valid captcha value');
 		$params = $this->set_defaults($defaults, $params);
 
 		if (isset($_POST["g-recaptcha-response"]))
@@ -61,16 +61,17 @@ class Forms_custom_fields {
 			$_POST[$params['key']] = $_POST["g-recaptcha-response"];
 		}
 
-        $params['type'] = 'none';
-        $func_str = '$CI =& get_instance();
-        	$validator =& $CI->form_builder->get_validator();
-        	$validator->add_rule("recaptcha_response_field", "required", "'.$params['error_message'].'", array("'.$this->CI->input->post('g-recaptcha-response').'"));
-			$validator->add_rule("recaptcha_response_field", "validate_recaptcha", "'.$params['error_message'].'", array("'.$params['recaptcha_private_key'].'"));
-			';
-		$func = create_function('$value', $func_str);
+		$params['type'] = 'none';
+		$func = function($value) use ($params) {
+			$CI =& get_instance();
+			$validator =& $CI->form_builder->get_validator();
+			$validator->add_rule("recaptcha_response_field", "required", $params['error_message'], array($CI->input->post('g-recaptcha-response')));
+			$validator->add_rule("recaptcha_response_field", "validate_recaptcha", $params['error_message'], array($params['recaptcha_private_key']));
+		};
+
 		$form_builder->set_post_process($params['key'], $func);
 
-		return recaptcha_get_html($params['recaptcha_public_key'], $params['recaptcha_theme']);
+		return recaptcha_get_html($params['recaptcha_public_key']);
 	}
 
 
@@ -101,12 +102,13 @@ class Forms_custom_fields {
 
 		if (!empty($_POST))
 		{
-			$func_str = '$CI =& get_instance();
+			$func = function($value) use ($params) {
+				$CI =& get_instance();
 				$validator =& $CI->form_builder->get_validator();
-				$validation_params = array("'.$params['akismet_api_key'].'", "'.$this->CI->input->post($params['name_field']).'", "'.$this->CI->input->post($params['email_field']).'", "'.$this->CI->input->post($params['message_field']).'");
-				$validator->add_rule("recaptcha_response_field", "validate_akismet", "'.$params['error_message'].'", $validation_params);
-				';
-			$func = create_function('$value', $func_str);
+				$validation_params = array($params['akismet_api_key'], $CI->input->post($params['name_field']), $CI->input->post($params['email_field']), $this->CI->input->post($params['message_field']));
+				$validator->add_rule("recaptcha_response_field", "validate_akismet", $params['error_message'], $validation_params);
+			};
+
 			$form_builder->set_post_process($params['key'], $func);
 		}
 
@@ -134,11 +136,11 @@ class Forms_custom_fields {
 		
 		if (!empty($_POST))
 		{
-			$func_str = '$CI =& get_instance();
+			$func = function($value) use ($params) {
+				$CI =& get_instance();
 				$validator =& $CI->form_builder->get_validator();
-				$validator->add_rule("donotfillthisout", "is_equal_to", "'.$params['error_message'].'", array("'.$this->CI->input->post('donotfillthisout').'", ""));
-				';
-			$func = create_function('$value', $func_str);
+				$validator->add_rule("donotfillthisout", "is_equal_to", $params['error_message'], array($CI->input->post('donotfillthisout'), ""));
+			};
 			$form_builder->set_post_process($params['key'], $func);
 		}
 
@@ -173,12 +175,14 @@ class Forms_custom_fields {
 		if (!empty($_POST))
 		{
 			$check_spam = (!empty($_SESSION['check_spam'])) ? $_SESSION['check_spam'] : NULL;
-			$func_str = '$CI =& get_instance();
+
+			$func = function($value) use ($params) {
+				$CI =& get_instance();
 				$validator =& $CI->form_builder->get_validator();
-				$validator->add_rule("antispam", "required", "'.$params['error_message'].'", array("'.$this->CI->input->post('antispam').'"));
-				$validator->add_rule("antispam", "is_equal_to", "'.$params['error_message'].'", array("'.$this->CI->input->post('antispam').'", "'.$check_spam.'"));
-				';
-			$func = create_function('$value', $func_str);
+				$validator->add_rule("antispam", "required", $params['error_message'], array($CI->input->post('antispam')));
+				$validator->add_rule("antispam", "is_equal_to", $params['error_message'], array($CI->input->post('antispam'), $check_spam));
+			};
+
 			$form_builder->set_post_process($params['key'], $func);
 		}
 
@@ -232,11 +236,12 @@ class Forms_custom_fields {
 			if (!empty($params['thresholds']['ip_threshold_ignore'])) $func_str .= '$thresholds["ip_threshold_ignore"] = '.$params['thresholds']['ip_threshold_ignore'].';';
 			if (!empty($params['thresholds']['email_threshold_ignore'])) $func_str .= '$thresholds["email_threshold_ignore"] = '.$params['thresholds']['email_threshold_ignore'].';';
 
-			$func_str .= '$validator =& $CI->form_builder->get_validator();
-				$validation_params = array("'.$this->CI->input->post($params['name_field']).'", "'.$this->CI->input->post($params['email_field']).'", "'.$_SERVER['REMOTE_ADDR'].'", $thresholds);
-				$validator->add_rule("'.$params['key'].'", "validate_stopforumspam", "'.$params['error_message'].'", $validation_params);
-				';
-			$func = create_function('$value', $func_str);
+			$func = function($value) use ($params, $thresholds) {
+				$CI =& get_instance();
+				$validator =& $CI->form_builder->get_validator();
+				$validation_params = array($CI->input->post($params['name_field']), $CI->input->post($params['email_field']), $_SERVER['REMOTE_ADDR'], $thresholds);
+				$validator->add_rule($params['key'], "validate_stopforumspam", $params['error_message'], $validation_params);
+			};
 			$form_builder->set_post_process($params['key'], $func);
 		}
 

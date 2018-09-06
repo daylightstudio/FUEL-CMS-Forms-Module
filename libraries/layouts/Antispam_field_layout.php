@@ -22,21 +22,21 @@ class Antispam_field_layout extends Base_field_layout {
 			$(function(){
 				var toggler = function(elem){
 					var context = $(elem).closest(".form");
-					$(".recaptcha_public_key, .recaptcha_private_key, .recaptcha_theme, .akismet_api_key", context).closest("tr").hide();
+					$(".recaptcha_public_key, .recaptcha_private_key, .akismet_api_key", context).closest("tr").hide();
 					switch($(elem).val()){
 						case "recaptcha":
-							$(".recaptcha_public_key, .recaptcha_private_key, .recaptcha_theme", context).closest("tr").show();
+							$(".recaptcha_public_key, .recaptcha_private_key", context).closest("tr").show();
 							break;
 						case "akismet":
 							$(".akismet_api_key", context).closest("tr").show();
 							break;
 					}
 				}
-				$(".toggler").change(function(e){
+				$("#anti_spam_method_method").change(function(e){
 					toggler(this)
 				})
 
-				toggler(".toggler");
+				toggler("#anti_spam_method_method");
 			});
 			</script>'
 
@@ -44,7 +44,6 @@ class Antispam_field_layout extends Base_field_layout {
 		$fields['akismet_api_key'] = array('class' => 'akismet_api_key', 'label' => 'Akismet API key');
 		$fields['recaptcha_public_key'] = array('class' => 'recaptcha_public_key', 'label' => 'reCAPTCHA public key', 'size' => 60);
 		$fields['recaptcha_private_key'] = array('class' => 'recaptcha_private_key', 'label' => 'reCAPTCHA private key', 'size' => 60);
-		$fields['recaptcha_theme'] = array('type' => 'select',  'label' => 'reCAPTCHA theme', 'options' => array('light' => 'light', 'dark' => 'dark'), 'class' => 'recaptcha_theme');
 		$fields = $this->process_fields($fields);
 		return $fields;
 	}
