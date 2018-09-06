@@ -52,6 +52,7 @@ $config['blocks']['checkbox'] = array(
 	'class'    => 'Checkbox_field_layout',
 	'filepath' => 'libraries/layouts',
 	'module'   => 'forms',
+	'model'    => array('forms' => 'forms_model'),
 );
 
 $config['blocks']['enum'] = array(
