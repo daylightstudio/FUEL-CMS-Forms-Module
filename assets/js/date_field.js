@@ -6,7 +6,6 @@ $(window).load(function(){
 		function(value, elem) {
 			if ($(elem).is('.date')){
 				var format = $(elem).data('date_format');
-				console.log(format)
 				switch(format){
 
 					case 'mm/dd/yyyy':
@@ -15,7 +14,7 @@ $(window).load(function(){
 					case 'yy-mm-dd':
 						return value.match(/^\d\d?\-\d\d?\-\d\d$/);					
 						break;
-					case 'yy-mm-dd':
+					case 'dd-mm-yy':
 						return value.match(/^\d\d?\/\d\d?\/\d\d\d\d$/);
 						break;
 					default:
