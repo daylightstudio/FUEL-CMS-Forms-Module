@@ -1,8 +1,11 @@
 <script src="<?php echo $recaptcha_script_url; ?>" async defer></script>
 <div
 		class="g-recaptcha"
+		id="recaptcha"
+		data-callback="onReCaptchaSuccess"
 		data-sitekey="<?php echo $recaptcha_public_key; ?>"
 		data-theme="<?php echo $recaptcha_theme; ?>">
+		>
 </div>
 <noscript>
 	<div>
@@ -25,3 +28,35 @@
 		</div>
 	</div>
 </noscript>
+
+<script type="text/javascript">
+// https://github.com/google/recaptcha/issues/130
+var HEADER_HEIGHT = 0; // Height of header/menu fixed if exists
+var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+var grecaptchaPosition;
+
+var isScrolledIntoView = function (elem) {
+	var elemRect = elem.getBoundingClientRect();
+	var isVisible = (elemRect.top - HEADER_HEIGHT >= 0 && elemRect.bottom <= window.innerHeight);
+
+	return isVisible;
+};
+
+if (isIOS) {
+	var recaptchaElements = document.querySelectorAll('.g-recaptcha');
+
+	window.addEventListener('scroll', function () {
+		Array.prototype.forEach.call(recaptchaElements, function (element) {
+			if (isScrolledIntoView(element)) {
+				grecaptchaPosition = document.documentElement.scrollTop || document.body.scrollTop;
+			}
+		});
+	}, false);
+}
+
+var onReCaptchaSuccess = function () {
+	if (isIOS && grecaptchaPosition !== undefined) {
+		window.scrollTo(0, grecaptchaPosition);
+	}
+};
+</script>
