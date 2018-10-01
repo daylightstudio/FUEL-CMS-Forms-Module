@@ -15,7 +15,7 @@ class Date_field_layout extends Base_field_layout {
 	 * @param	mixed 	The value to validate
 	 * @return	object
 	 */	
-	function frontend_validation($value)
+	function frontend_validation($name)
 	{
 		$validator = $this->get_validator();
 		$validator->add_rule($name, 'valid_date', 'Please enter in a valid date');
