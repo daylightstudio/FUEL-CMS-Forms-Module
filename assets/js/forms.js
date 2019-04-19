@@ -1,3 +1,6 @@
+//To prevent issues when a user is logged into FUEL admin since this jquery.forms 
+// plugin is already loaded and causes an issue with AJAX submitted forms.
+$.fn.ajaxSubmitAlias = $.fn.ajaxSubmit;
 $(function(){
 
 	var beforeSubmit = function(formData, form, options){
@@ -40,7 +43,7 @@ $(function(){
 
 	//**** SUBMIT ACTION ****
 	var submitAction = function(form) {
-   		$(form).ajaxSubmit(formOptions);
+   		$(form).ajaxSubmitAlias(formOptions);
 	}
 
 	var isTrue = function(elem, key){
