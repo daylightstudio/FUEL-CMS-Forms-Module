@@ -19,6 +19,7 @@ $(function(){
 		$formMessages.fadeIn();
 		$formMessages.html(response);
 		$('input[type=submit]', $form).prop('disabled', false);
+		$form.trigger('form-success');
 	}
 
 	var submitError = function(xhr, status, error, $form){
@@ -32,6 +33,7 @@ $(function(){
 			$formMessages.text('Oops! An error occurred.');
 		}
 		$('input[type=submit]', $form).prop('disabled', false);
+		$form.trigger('form-error');
 	}
 
 	var formOptions = { 
