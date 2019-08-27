@@ -176,7 +176,7 @@ class Forms_custom_fields {
 		{
 			$check_spam = (!empty($_SESSION['check_spam'])) ? $_SESSION['check_spam'] : NULL;
 
-			$func = function($value) use ($params) {
+			$func = function($value) use ($params, $check_spam) {
 				$CI =& get_instance();
 				$validator =& $CI->form_builder->get_validator();
 				$validator->add_rule("antispam", "required", $params['error_message'], array($CI->input->post('antispam')));
