@@ -51,8 +51,10 @@ $config['forms']['akismet_api_key'] = '';
 $config['forms']['stopforumspam'] = array(
 	'ip_threshold_flag'      => 5,
 	'email_threshold_flag'   => 20,
+	'name_threshold_flag'    => 50,
 	'ip_threshold_ignore'    => 20,
 	'email_threshold_ignore' => 50,
+	'name_threshold_ignore'  => 60,
 );
 
 // The fields used for SPAM checking

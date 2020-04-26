@@ -38,8 +38,6 @@ class Stopforumspam extends Fuel_base_library {
 	protected $CI;
 	protected $fuel;
 	protected $_result;
-	protected $_ip_frequency;
-	protected $_email_frequency;
 	protected $_config = array();
 
 	public function __construct()
@@ -128,10 +126,6 @@ class Stopforumspam extends Fuel_base_library {
 				}
 				else
 				{
-
-					$this->_ip_frequency = $this->result('ip.frequency', 0);
-					$this->_email_frequency = $this->result('email.frequency', 0);
-
 					// Flag registrations as spam above a certain threshold.
 					if ($this->is_above_threshold())
 					{
@@ -155,20 +149,27 @@ class Stopforumspam extends Fuel_base_library {
 	 * @access	public
 	 * @param	string  The IP frequency threshold to check (optional)
 	 * @param	mixed   The email frequency threshold to check (optional)
+	 * @param	mixed   The name confidence value to check (optional)
 	 * @return	boolean
 	 */
-	public function is_above_threshold($ip_frequency = NULL, $email_frequency = NULL)
+	public function is_above_threshold($ip_frequency = NULL, $email_frequency = NULL, $name_confidence = NULL)
 	{
 		if (is_null($ip_frequency))
 		{
 			$ip_frequency = $this->result('ip.frequency', 0);
 		}
+
 		if (is_null($email_frequency))
 		{
 			$email_frequency = $this->result('email.frequency', 0);
 		}
 
-		if ($ip_frequency >= $this->config('ip_threshold_flag') || $email_frequency >= $this->config('email_threshold_flag'))
+		if (is_null($name_confidence))
+		{
+			$name_confidence = $this->result('username.confidence', 0);
+		}
+
+		if ($ip_frequency >= $this->config('ip_threshold_flag') || $email_frequency >= $this->config('email_threshold_flag')|| $name_confidence >= $this->config('name_threshold_flag'))
 		{
 			return TRUE;
 		}
@@ -181,9 +182,10 @@ class Stopforumspam extends Fuel_base_library {
 	 * @access	public
 	 * @param	string  The IP frequency threshold to check (optional)
 	 * @param	mixed   The email frequency threshold to check (optional)
+	 * @param	mixed   The name confidence value to check (optional)
 	 * @return	boolean
 	 */
-	public function is_ignorable($ip_frequency = NULL, $email_frequency = NULL)
+	public function is_ignorable($ip_frequency = NULL, $email_frequency = NULL, $name_confidence = NULL)
 	{
 		if (is_null($ip_frequency))
 		{
@@ -194,7 +196,12 @@ class Stopforumspam extends Fuel_base_library {
 			$email_frequency = $this->result('email.frequency', 0);
 		}
 
-		if ($ip_frequency >= $this->config('ip_threshold_ignore') || $email_frequency >= $this->config('email_threshold_ignore'))
+		if (is_null($name_confidence))
+		{
+			$name_confidence = $this->result('username.confidence', 0);
+		}
+
+		if ($ip_frequency >= $this->config('ip_threshold_ignore') || $email_frequency >= $this->config('email_threshold_ignore') || $name_confidence >= $this->config('name_threshold_ignore'))
 		{
 			return TRUE;
 		}
@@ -251,9 +258,10 @@ class Stopforumspam extends Fuel_base_library {
 	 * 
 	 * @access	public
 	 * @param	string  The config key value to return (optional)
+	 * @param	string  The default value to return (optional)
 	 * @return	mixed 	If no key value is supplied, the entire config array is returned
 	 */
-	public function config($key = NULL)
+	public function config($key = NULL, $default = FALSE)
 	{
 		if (isset($key))
 		{
@@ -261,7 +269,7 @@ class Stopforumspam extends Fuel_base_library {
 			{
 				return $this->_config[$key];
 			}
-			return FALSE;
+			return $default;
 		}
 		return $this->_config;
 	}
