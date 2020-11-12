@@ -322,6 +322,7 @@ class Fuel_form extends Fuel_base_library {
 	protected $fields = array(); // The fields for the form. This is not required if you are using your own HTML in a block or HTML form_display view
 	protected $form_builder = array(); // Initialization parameters for the Form_builder class used if a form is being auto-generated
 	protected $hooks = array(); // An array of different callable functions associated with one of the predefined hooks "pre_validate", "post_validate", "pre_save", "post_save", "pre_notify", "success", "error" (e.g. 'pre_validate' => 'My_func')
+	protected $vars = array(); // An array of additional variables to send to the rendered output
 
 	// --------------------------------------------------------------------
 	
@@ -467,6 +468,38 @@ class Fuel_form extends Fuel_base_library {
 		return $output;
 	}
 
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Returns an array of additional variables to be sent to the view.
+	 *
+	 * @access	public
+	 * @return	array
+	 */	
+	public function get_vars()
+	{
+		if (empty($this->vars))
+		{
+			return array();
+		}
+		return $this->vars;
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Sets additional variables to be sent to the view.
+	 *
+	 * @access	public
+	 * @return	$this
+	 */	
+	public function set_vars($vars)
+	{
+		$this->vars = $vars;
+
+		return $this;
+	}
+	
 	// --------------------------------------------------------------------
 	
 	/**
@@ -778,6 +811,7 @@ class Fuel_form extends Fuel_base_library {
 			}
 
 			$this->call_hook('post_process');
+
 			if (!$is_spam OR ($is_spam AND $this->fuel->forms->config('send_spam')))
 			{
 				if (!$this->notify($_POST['__email_message__']))
@@ -787,6 +821,7 @@ class Fuel_form extends Fuel_base_library {
 					return FALSE;
 				}
 			}
+
 			$this->call_hook('success');
 			return TRUE;
 		}
@@ -1257,6 +1292,8 @@ class Fuel_form extends Fuel_base_library {
 		}
 		$vars['fields'] = $rendered_fields;
 		$vars['form'] = $this;
+		$vars = array_merge($vars, $this->get_vars());
+
 		return $vars;
 	}
 
@@ -1670,7 +1707,7 @@ class Fuel_form extends Fuel_base_library {
 	// --------------------------------------------------------------------
 	
 	/**
-	 * Returns the text to be display after submisssion.
+	 * Returns the text to be display after submission.
 	 *
 	 * @access	protected
 	 * @return	string

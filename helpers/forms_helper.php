@@ -51,6 +51,11 @@ function form($name, $params = array())
 	{
 		$form = $CI->fuel->forms->create($name, $params);
 	}
+	elseif (!empty($params['vars']))
+	{
+		$form->set_vars($params['vars']);
+	}
+	
 	return $form->render();
 }
 
