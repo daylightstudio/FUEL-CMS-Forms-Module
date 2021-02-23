@@ -194,7 +194,7 @@ $params['return_url'] = 'http:&#47;&#47;mysite.com/signup'; // only works if jav
 $params['js'] = 'myvalidation.js'; // extra javascript validation can be included
 $params['form_builder'] = array(); // Initialization parameters for the Form_builder class used if a form is being auto-generated
 $params['hooks'] = array(); // An array of different callable functions associated with one of the predefined hooks "pre_validate", "post_validate", "pre_save", "post_save", "pre_notify", "success", "error" (e.g. 'pre_validate' => 'My_func')
-
+$params['vars'] = array(); // An array of additional variables to send to the rendered output
 
 $form = $this->fuel->forms->create('myform', $params);
 echo $form->render();
