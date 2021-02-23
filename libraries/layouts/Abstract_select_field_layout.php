@@ -17,7 +17,7 @@ abstract class Abstract_select_field_layout extends Base_field_layout {
 	public function fields()
 	{
 		$fields = parent::fields();
-		$fields['options'] = array('type' => 'keyval', 'after_html'=> "<br>To add select options, put in values separated by a colon like so 'value:label'", 'allow_numeric_indexes' => TRUE);
+		$fields['options'] = array('type' => 'keyval', 'after_html'=> "<br>To add select options, put in values separated by a colon like so 'value:label'", 'allow_numeric_indexes' => FALSE);
 		$fields = $this->process_fields($fields);
 		return $fields;
 	}
